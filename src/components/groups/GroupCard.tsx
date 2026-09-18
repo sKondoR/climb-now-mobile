@@ -36,7 +36,7 @@ export default observer(function GroupCard({ group }: GroupCardProps) {
   })
 
   return (
-    <View className={`bg-white rounded-lg shadow-sm border p-4 ${isOnline ? 'border-green-500' : 'border-gray-200'}`}>
+    <View className={`bg-white shadow-sm border p-4 ${isOnline ? 'border-green-500' : 'border-gray-200'}`}>
       <Pressable className="flex-row items-center" onPress={() => setIsExpanded(!isExpanded)}>
         <Text className="text-xl font-bold text-gray-900 mr-2">{group.title}</Text>
         <StatusIcon status={isOnline} onlyOnline />

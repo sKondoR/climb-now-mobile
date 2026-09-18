@@ -10,6 +10,7 @@ import { isGroupOnline } from '@/components/groups/groups.utils'
 import ResultsForm from '@/components/forms/ResultsForm'
 import DisciplineTabs from '@/components/groups/DisciplineTabs'
 import GroupCard from '@/components/groups/GroupCard'
+import AppTitle from '@/components/AppTitle'
 
 function CenteredMessage({ title, subtitle }: { title: string; subtitle?: string }) {
   return (
@@ -43,10 +44,7 @@ export default observer(function HomeScreen() {
     const discipline = disciplinesStore.groupsData?.[activeTab]
     if (!discipline) {
       return (
-        <CenteredMessage
-          title="Добро пожаловать в ClimbNow!"
-          subtitle="Введите код соревнований и свою команду для отображения результатов"
-        />
+        <AppTitle />
       )
     }
 
@@ -71,7 +69,7 @@ export default observer(function HomeScreen() {
   // боковая навигационная панель Android (3 кнопки), которая иначе перекрывает контент.
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
-      <ScrollView contentContainerClassName="px-4 pt-4 pb-8" keyboardShouldPersistTaps="handled">
+      <ScrollView contentContainerClassName="py-4" keyboardShouldPersistTaps="handled">
         <ResultsForm />
         <View className="mt-4">{renderContent()}</View>
       </ScrollView>

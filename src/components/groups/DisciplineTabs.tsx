@@ -12,7 +12,12 @@ interface DisciplineTabsProps {
 export default function DisciplineTabs({ disciplines, setActiveTab, activeTab }: DisciplineTabsProps) {
   if (!disciplines) return null
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-3" contentContainerClassName="gap-1 px-1">
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      className="mb-3"
+      contentContainerClassName="grow gap-1 px-4 justify-center"
+    >
       {disciplines.map(({ discipline }, index: number) => {
         const isDisabled = discipline === DISCIPLINES.SPEED
         const isActive = activeTab === index

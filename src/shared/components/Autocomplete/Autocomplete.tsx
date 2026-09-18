@@ -1,5 +1,6 @@
 import { ReactNode, useMemo, useRef, useState } from 'react'
 import { FlatList, Modal, Pressable, Text, TextInput as RNTextInput, useWindowDimensions, View } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6'
 
 import { Item } from './Autocomplete.types'
@@ -51,6 +52,10 @@ export const Autocomplete = <T extends Item = string>({
   const [dropdownLayout, setDropdownLayout] = useState<DropdownLayout | null>(null)
   const inputWrapperRef = useRef<View>(null)
   const { height: windowHeight } = useWindowDimensions()
+  // На Android useWindowDimensions().height включает область под системной панелью
+  // навигации (кнопки "назад"/"домой"), поэтому без вычитания insets.bottom список
+  // рисуется под ней, а не над.
+  const insets = useSafeAreaInsets()
 
   // При повороте экрана старые координаты (измеренные до поворота) больше не верны и список
   // может наложиться на другие элементы — проще закрыть его, чем показывать по неактуальной позиции.
@@ -139,10 +144,10 @@ export const Autocomplete = <T extends Item = string>({
                 top: dropdownLayout.top,
                 left: dropdownLayout.left,
                 width: dropdownLayout.width,
-                // Не даём списку вылезти за нижний край экрана (актуально в альбомной
-                // ориентации, где высоты под инпутом заметно меньше) — вместо этого он
-                // сжимается по высоте и получает собственный скролл через FlatList.
-                maxHeight: Math.min(300, windowHeight - dropdownLayout.top - 16),
+                // Список растягивается вниз до отступа 16 (такого же, как px-4/pt-4 у
+                // ScrollView в index.tsx), чтобы занимать весь доступный экран, а не только
+                // высоту контента — вместо этого он получает собственный скролл через FlatList.
+                maxHeight: windowHeight - insets.bottom - dropdownLayout.top,
               }}
               className="bg-white rounded-md shadow-lg border border-gray-300 overflow-hidden"
             >
