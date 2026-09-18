@@ -7,7 +7,7 @@ import { rootStore } from '@/store/root.store'
 import { MIN_URL_CODE_LENGTH } from '@/shared/constants'
 import { Group } from '@/shared/types'
 import { isGroupOnline } from '@/components/groups/groups.utils'
-import ResultsForm from '@/components/forms/ResultsForm'
+import Header from '@/components/layout/Header'
 import DisciplineTabs from '@/components/groups/DisciplineTabs'
 import GroupCard from '@/components/groups/GroupCard'
 import AppTitle from '@/components/AppTitle'
@@ -68,9 +68,9 @@ export default observer(function HomeScreen() {
   // статус-бар сверху и жестовая/навигационная панель снизу, а в альбомной — ещё и
   // боковая навигационная панель Android (3 кнопки), которая иначе перекрывает контент.
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
+    <SafeAreaView className="flex-1 bg-gray-70">
       <ScrollView contentContainerClassName="py-4" keyboardShouldPersistTaps="handled">
-        <ResultsForm />
+        <Header />
         <View className="mt-4">{renderContent()}</View>
       </ScrollView>
     </SafeAreaView>

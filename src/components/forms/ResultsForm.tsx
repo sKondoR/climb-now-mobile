@@ -57,7 +57,7 @@ export default observer(function ResultsForm() {
   }, [])
 
   return (
-    <View className="gap-4 px-4">
+    <View className="gap-4">
       <View className="relative">
         <Autocomplete
           value={formStore.code}

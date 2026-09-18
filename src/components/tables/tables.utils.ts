@@ -11,14 +11,17 @@ import { Results, ResultsItem } from '@/shared/types'
 export const isCommandMatch = (command: string, selectedCommand: string) =>
   !!selectedCommand && command.toLowerCase() === selectedCommand.toLowerCase()
 
-export const isNameMatch = (name: string, names: string) =>
-  !!names
+export const isNameMatch = (name: string, names: string) => {
+  const searchTerms = names
     .toLowerCase()
-    .replaceAll('  ', ' ')
-    .replaceAll(',  ', ',')
     .replaceAll(';', ',')
     .split(',')
-    .find((a) => name.trim().toLowerCase().includes(a.trim().toLowerCase()))
+    .map((term) => term.trim().replace(/\s+/g, ' '))
+    .filter((term) => term !== '')
+
+  const normalizedName = name.trim().toLowerCase()
+  return searchTerms.some((term) => normalizedName.includes(term))
+}
 
 interface getConfigProps {
   isLead: boolean

@@ -111,7 +111,7 @@ export const Autocomplete = <T extends Item = string>({
       {label && (
         <Text className="text-sm font-medium text-gray-700 mb-2">
           {label}
-          {dataLabel ? <Text className="text-xs text-gray-500"> (например: {dataLabel})</Text> : null}
+          {dataLabel ? <Text className="text-sm text-gray-500"> (например: {dataLabel})</Text> : null}
         </Text>
       )}
       <View ref={inputWrapperRef} className="relative flex-row items-center">

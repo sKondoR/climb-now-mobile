@@ -45,6 +45,10 @@ describe('tables.utils', () => {
       expect(isNameMatch('Витя Петров', 'Иванов')).toBe(false)
     })
 
+    it('should not match every name when the list has a trailing comma', () => {
+      expect(isNameMatch('Витя Сидоров', 'Петров, Иванов,')).toBe(false)
+    })
+
     it('should handle multiple spaces correctly', () => {
       expect(isNameMatch('Витя Петров', 'витя  петров')).toBe(true)
     })
