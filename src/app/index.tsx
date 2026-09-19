@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ScrollView, Text, View } from 'react-native'
+import { FlatList, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { observer } from 'mobx-react-lite'
 
@@ -21,6 +21,10 @@ function CenteredMessage({ title, subtitle }: { title: string; subtitle?: string
   )
 }
 
+const keyExtractor = (group: Group) => String(group.id)
+const renderGroup = ({ item }: { item: Group }) => <GroupCard group={item} />
+const GroupSeparator = () => <View className="h-4" />
+
 export default observer(function HomeScreen() {
   const [activeTab, setActiveTab] = useState(0)
   const disciplinesStore = rootStore.disciplinesStore
@@ -30,7 +34,14 @@ export default observer(function HomeScreen() {
     setActiveTab(0)
   }, [formStore.code])
 
-  const renderContent = () => {
+  const discipline = disciplinesStore.groupsData?.[activeTab]
+  const filteredGroups: Group[] = !discipline
+    ? []
+    : formStore.isOnlyOnline
+      ? discipline.groups.filter(isGroupOnline)
+      : discipline.groups
+
+  const renderHeaderContent = () => {
     if (disciplinesStore.isGroupsLoading) {
       return <CenteredMessage title="загрузка..." />
     }
@@ -40,39 +51,41 @@ export default observer(function HomeScreen() {
     if (formStore.code.length >= MIN_URL_CODE_LENGTH && !disciplinesStore.groupsData?.length) {
       return <CenteredMessage title="Нет данных по этому соревнованию" />
     }
-
-    const discipline = disciplinesStore.groupsData?.[activeTab]
     if (!discipline) {
-      return (
-        <AppTitle />
-      )
+      return <AppTitle />
     }
 
-    const filteredGroups = formStore.isOnlyOnline ? discipline.groups.filter(isGroupOnline) : discipline.groups
     return (
       <>
         <DisciplineTabs disciplines={disciplinesStore.groupsData} setActiveTab={setActiveTab} activeTab={activeTab} />
         {!filteredGroups.length && discipline.groups.length ? (
           <Text className="text-center text-gray-500 mb-4">нет онлайн групп</Text>
         ) : null}
-        <View className="gap-4">
-          {filteredGroups.map((group: Group) => (
-            <GroupCard key={group.id} group={group} />
-          ))}
-        </View>
       </>
     )
   }
+
+  const showGroups = !disciplinesStore.isGroupsLoading && !!discipline
 
   // Без edges — по умолчанию учитываются все стороны: в портретной ориентации это
   // статус-бар сверху и жестовая/навигационная панель снизу, а в альбомной — ещё и
   // боковая навигационная панель Android (3 кнопки), которая иначе перекрывает контент.
   return (
     <SafeAreaView className="flex-1 bg-gray-70">
-      <ScrollView contentContainerClassName="py-4" keyboardShouldPersistTaps="handled">
-        <Header />
-        <View className="mt-4">{renderContent()}</View>
-      </ScrollView>
+      <FlatList
+        data={showGroups ? filteredGroups : []}
+        keyExtractor={keyExtractor}
+        renderItem={renderGroup}
+        ItemSeparatorComponent={GroupSeparator}
+        ListHeaderComponent={
+          <>
+            <Header />
+            <View className="mt-4">{renderHeaderContent()}</View>
+          </>
+        }
+        contentContainerClassName="py-4"
+        keyboardShouldPersistTaps="handled"
+      />
     </SafeAreaView>
   )
 })

@@ -55,7 +55,7 @@ Components under `src/components/` and `src/shared/components/` are RN rewrites 
 - `Autocomplete` closes its dropdown via a `Modal` + `Pressable` backdrop instead of the web version's `document.addEventListener('mousedown', ...)`.
 - `Table` renders as nested `View`s in a horizontal `ScrollView` (fixed-width columns via `getTableConfig`) instead of an HTML `<table>`.
 - Icons use `@expo/vector-icons/FontAwesome6` instead of `@fortawesome/react-fontawesome`.
-- The web app's `LazyLoader` (`IntersectionObserver`-based lazy mount) was dropped per the migration plan; the group list in `src/app/index.tsx` currently renders via a plain `ScrollView`/`.map()` rather than a virtualized `FlatList` — fine while a competition has a modest number of groups, but worth revisiting with `FlatList` if that stops being true.
+- The web app's `LazyLoader` (`IntersectionObserver`-based lazy mount) was dropped per the migration plan; the group list in `src/app/index.tsx` renders via a virtualized `FlatList` (header, discipline tabs and status messages live in `ListHeaderComponent`; spacing between cards is an `ItemSeparatorComponent`). `@shopify/flash-list` isn't installed — consider it only if `FlatList` proves too slow.
 - `react-compiler` is enabled (`app.json` → `experiments.reactCompiler`), which is strict about mutating variables during render and calling `setState` synchronously inside `useEffect`. `tables.utils.ts`'s `getFinalBorderClasses()` and the derived-state pattern in `Autocomplete`/`useFetchResults` exist specifically to satisfy that lint (`npm run lint`) — don't reintroduce a `let` mutated inside a `.map()` in a render body or an effect that just mirrors props/query state into local state.
 
 ### Not yet done
