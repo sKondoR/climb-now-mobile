@@ -8,6 +8,7 @@ import { MIN_URL_CODE_LENGTH } from '@/shared/constants'
 import { Group } from '@/shared/types'
 import { isGroupOnline } from '@/components/groups/groups.utils'
 import Header from '@/components/layout/Header'
+import OfflineBanner from '@/components/layout/OfflineBanner'
 import DisciplineTabs from '@/components/groups/DisciplineTabs'
 import GroupCard from '@/components/groups/GroupCard'
 import AppTitle from '@/components/AppTitle'
@@ -80,6 +81,7 @@ export default observer(function HomeScreen() {
         ListHeaderComponent={
           <>
             <Header />
+            <OfflineBanner />
             <View className="mt-4">{renderHeaderContent()}</View>
           </>
         }

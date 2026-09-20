@@ -1,4 +1,5 @@
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import { onlineManager } from "@tanstack/react-query";
 import { observer } from "mobx-react-lite";
 import { useCallback, useEffect } from "react";
 import { Pressable, View } from "react-native";
@@ -27,10 +28,33 @@ export default observer(function ResultsForm() {
     formStore;
 
   useEffect(() => {
-    const currentEvent = eventsStore.events?.find(
-      (event) => event.link === formStore.code,
-    );
-    disciplinesStore.fetchGroups(formStore.code, currentEvent?.name);
+    const loadGroups = () => {
+      const currentEvent = eventsStore.events?.find(
+        (event) => event.link === formStore.code,
+      );
+      disciplinesStore.fetchGroups(formStore.code, currentEvent?.name);
+    };
+
+    loadGroups();
+
+    // Группы грузятся мимо React Query, поэтому сами не перезапросятся, когда вернётся сеть
+    return onlineManager.subscribe((online) => {
+      console.log(
+        "[debug] onlineManager:",
+        online,
+        "groupsData null:",
+        disciplinesStore.groupsData === null,
+        "loading:",
+        disciplinesStore.isGroupsLoading,
+      );
+      if (
+        online &&
+        disciplinesStore.groupsData === null &&
+        !disciplinesStore.isGroupsLoading
+      ) {
+        loadGroups();
+      }
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formStore.code]);
 

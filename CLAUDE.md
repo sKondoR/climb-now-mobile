@@ -66,3 +66,17 @@ Components under `src/components/` and `src/shared/components/` are RN rewrites 
 ## Sibling project
 
 `../climb-now` is the source Next.js web app this is being ported from, and also the live backend this app's API calls hit in production.
+
+## Agent skills
+
+### Issue tracker
+
+Issues живут в GitHub Issues репозитория `sKondoR/climb-now-mobile` (через `gh` CLI). See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Стандартные пять меток: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: один `CONTEXT.md` и `docs/adr/` в корне. See `docs/agents/domain.md`.
