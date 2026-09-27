@@ -9,8 +9,8 @@ export default function OfflineBanner() {
   if (online) return null
 
   return (
-    <View className="bg-amber-100 px-4 py-2 mt-2">
-      <Text className="text-center text-sm text-amber-800">нет сети, показаны сохранённые данные</Text>
+    <View className="bg-warn-soft px-4 py-2 mt-2" accessibilityRole="alert" accessibilityLiveRegion="polite">
+      <Text className="text-center text-body-sm text-warn-fg">нет сети, показаны сохранённые данные</Text>
     </View>
   )
 }

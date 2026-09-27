@@ -1,15 +1,17 @@
 import { useState } from 'react'
-import { Pressable, Share } from 'react-native'
+import { Share } from 'react-native'
 import { observer } from 'mobx-react-lite'
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6'
 
 import { copyToClipboard, getShareUrl } from '@/shared/utils/forms.utils'
 import { rootStore } from '@/store/root.store'
+import { useIconColors } from '@/shared/theme'
+import IconButton from '../IconButton/IconButton'
 
 export default observer(function ShareNamesBtn() {
   const formStore = rootStore.formStore
   const names = formStore.names
   const [isSharing, setIsSharing] = useState(false)
+  const iconColors = useIconColors()
 
   if (!names) return null
 
@@ -25,8 +27,13 @@ export default observer(function ShareNamesBtn() {
   }
 
   return (
-    <Pressable onPress={handleShareClick} disabled={isSharing} className="p-2">
-      <FontAwesome6 name="share-nodes" solid size={14} color="#2563eb" />
-    </Pressable>
+    <IconButton
+      icon="share-nodes"
+      label="Поделиться списком скалолазов"
+      color={iconColors.accent}
+      onPress={handleShareClick}
+      disabled={isSharing}
+      busy={isSharing}
+    />
   )
 })

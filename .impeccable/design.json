@@ -1,0 +1,610 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-27T21:01:35+00:00",
+  "title": "Design System: ClimbNow Mobile",
+  "extensions": {
+    "colorMeta": {
+      "canvas": {
+        "role": "neutral",
+        "displayName": "Трибуна",
+        "dark": "#020617",
+        "tonalRamp": [
+          "#020617",
+          "#0f172a",
+          "#1e293b",
+          "#334155",
+          "#475569",
+          "#64748b",
+          "#cbd5e1",
+          "#f1f5f9"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Поверхность",
+        "dark": "#0f172a",
+        "tonalRamp": [
+          "#020617",
+          "#0f172a",
+          "#1e293b",
+          "#334155",
+          "#475569",
+          "#64748b",
+          "#cbd5e1",
+          "#f1f5f9"
+        ]
+      },
+      "surface-muted": {
+        "role": "neutral",
+        "displayName": "Приглушённая поверхность",
+        "dark": "#1e293b",
+        "tonalRamp": [
+          "#020617",
+          "#0f172a",
+          "#1e293b",
+          "#334155",
+          "#475569",
+          "#64748b",
+          "#cbd5e1",
+          "#f1f5f9"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Линия",
+        "dark": "#334155",
+        "tonalRamp": [
+          "#020617",
+          "#0f172a",
+          "#1e293b",
+          "#334155",
+          "#475569",
+          "#64748b",
+          "#cbd5e1",
+          "#f1f5f9"
+        ]
+      },
+      "line-subtle": {
+        "role": "neutral",
+        "displayName": "Тонкая линия",
+        "dark": "#1e293b",
+        "tonalRamp": [
+          "#020617",
+          "#0f172a",
+          "#1e293b",
+          "#334155",
+          "#475569",
+          "#64748b",
+          "#cbd5e1",
+          "#f1f5f9"
+        ]
+      },
+      "fg": {
+        "role": "neutral",
+        "displayName": "Текст",
+        "dark": "#f1f5f9",
+        "tonalRamp": [
+          "#020617",
+          "#0f172a",
+          "#1e293b",
+          "#334155",
+          "#475569",
+          "#64748b",
+          "#cbd5e1",
+          "#f1f5f9"
+        ]
+      },
+      "fg-muted": {
+        "role": "neutral",
+        "displayName": "Текст приглушённый",
+        "dark": "#cbd5e1",
+        "tonalRamp": [
+          "#020617",
+          "#0f172a",
+          "#1e293b",
+          "#334155",
+          "#475569",
+          "#64748b",
+          "#cbd5e1",
+          "#f1f5f9"
+        ]
+      },
+      "fg-subtle": {
+        "role": "neutral",
+        "displayName": "Текст тихий",
+        "dark": "#94a3b8",
+        "tonalRamp": [
+          "#020617",
+          "#0f172a",
+          "#1e293b",
+          "#334155",
+          "#475569",
+          "#64748b",
+          "#cbd5e1",
+          "#f1f5f9"
+        ]
+      },
+      "fg-disabled": {
+        "role": "neutral",
+        "displayName": "Текст неактивный",
+        "dark": "#475569",
+        "tonalRamp": [
+          "#020617",
+          "#0f172a",
+          "#1e293b",
+          "#334155",
+          "#475569",
+          "#64748b",
+          "#cbd5e1",
+          "#f1f5f9"
+        ]
+      },
+      "accent": {
+        "role": "primary",
+        "displayName": "Свои",
+        "dark": "#2563eb",
+        "tonalRamp": [
+          "#172554",
+          "#1e3a8a",
+          "#1e40af",
+          "#1d4ed8",
+          "#2563eb",
+          "#60a5fa",
+          "#bfdbfe",
+          "#dbeafe"
+        ]
+      },
+      "accent-fg": {
+        "role": "primary",
+        "displayName": "Свои, иконки",
+        "dark": "#60a5fa",
+        "tonalRamp": [
+          "#172554",
+          "#1e3a8a",
+          "#1e40af",
+          "#1d4ed8",
+          "#2563eb",
+          "#60a5fa",
+          "#bfdbfe",
+          "#dbeafe"
+        ]
+      },
+      "accent-soft": {
+        "role": "primary",
+        "displayName": "Свои, мягкий",
+        "dark": "#172554",
+        "tonalRamp": [
+          "#172554",
+          "#1e3a8a",
+          "#1e40af",
+          "#1d4ed8",
+          "#2563eb",
+          "#60a5fa",
+          "#bfdbfe",
+          "#dbeafe"
+        ]
+      },
+      "accent-soft-fg": {
+        "role": "primary",
+        "displayName": "Свои, мягкий текст",
+        "dark": "#bfdbfe",
+        "tonalRamp": [
+          "#172554",
+          "#1e3a8a",
+          "#1e40af",
+          "#1d4ed8",
+          "#2563eb",
+          "#60a5fa",
+          "#bfdbfe",
+          "#dbeafe"
+        ]
+      },
+      "highlight": {
+        "role": "primary",
+        "displayName": "Свои, подсветка",
+        "dark": "#1e3a8a",
+        "tonalRamp": [
+          "#172554",
+          "#1e3a8a",
+          "#1e40af",
+          "#1d4ed8",
+          "#2563eb",
+          "#60a5fa",
+          "#bfdbfe",
+          "#dbeafe"
+        ]
+      },
+      "live": {
+        "role": "secondary",
+        "displayName": "Онлайн и лидеры",
+        "dark": "#4ade80",
+        "tonalRamp": [
+          "#052e16",
+          "#14532d",
+          "#166534",
+          "#15803d",
+          "#22c55e",
+          "#4ade80",
+          "#bbf7d0",
+          "#f0fdf4"
+        ]
+      },
+      "live-soft": {
+        "role": "secondary",
+        "displayName": "Онлайн и лидеры, подложка",
+        "dark": "#14532d",
+        "tonalRamp": [
+          "#052e16",
+          "#14532d",
+          "#166534",
+          "#15803d",
+          "#22c55e",
+          "#4ade80",
+          "#bbf7d0",
+          "#f0fdf4"
+        ]
+      },
+      "live-faint": {
+        "role": "secondary",
+        "displayName": "Онлайн и лидеры, слабая",
+        "dark": "#052e16",
+        "tonalRamp": [
+          "#052e16",
+          "#14532d",
+          "#166534",
+          "#15803d",
+          "#22c55e",
+          "#4ade80",
+          "#bbf7d0",
+          "#f0fdf4"
+        ]
+      },
+      "live-line": {
+        "role": "secondary",
+        "displayName": "Онлайн и лидеры, линия",
+        "dark": "#22c55e",
+        "tonalRamp": [
+          "#052e16",
+          "#14532d",
+          "#166534",
+          "#15803d",
+          "#22c55e",
+          "#4ade80",
+          "#bbf7d0",
+          "#f0fdf4"
+        ]
+      },
+      "boulder": {
+        "role": "tertiary",
+        "displayName": "Боулдер",
+        "dark": "#7f1d1d",
+        "tonalRamp": [
+          "#450a0a",
+          "#7f1d1d",
+          "#991b1b",
+          "#b91c1c",
+          "#dc2626",
+          "#f87171",
+          "#fca5a5",
+          "#fee2e2"
+        ]
+      },
+      "boulder-fg": {
+        "role": "tertiary",
+        "displayName": "Боулдер, текст",
+        "dark": "#fee2e2",
+        "tonalRamp": [
+          "#030712",
+          "#111827",
+          "#1f2937",
+          "#374151",
+          "#4b5563",
+          "#9ca3af",
+          "#e5e7eb",
+          "#f9fafb"
+        ]
+      },
+      "boulder-empty": {
+        "role": "neutral",
+        "displayName": "Боулдер, пусто",
+        "dark": "#374151",
+        "tonalRamp": [
+          "#030712",
+          "#111827",
+          "#1f2937",
+          "#374151",
+          "#4b5563",
+          "#9ca3af",
+          "#e5e7eb",
+          "#f9fafb"
+        ]
+      },
+      "warn-soft": {
+        "role": "status",
+        "displayName": "Предупреждение",
+        "dark": "#452e0a",
+        "tonalRamp": [
+          "#451a03",
+          "#78350f",
+          "#92400e",
+          "#b45309",
+          "#d97706",
+          "#fbbf24",
+          "#fde68a",
+          "#fef3c7"
+        ]
+      },
+      "warn-fg": {
+        "role": "status",
+        "displayName": "Предупреждение, текст",
+        "dark": "#fde68a",
+        "tonalRamp": [
+          "#451a03",
+          "#78350f",
+          "#92400e",
+          "#b45309",
+          "#d97706",
+          "#fbbf24",
+          "#fde68a",
+          "#fef3c7"
+        ]
+      },
+      "danger": {
+        "role": "status",
+        "displayName": "Ошибка",
+        "dark": "#b91c1c",
+        "tonalRamp": [
+          "#450a0a",
+          "#7f1d1d",
+          "#991b1b",
+          "#b91c1c",
+          "#dc2626",
+          "#f87171",
+          "#fca5a5",
+          "#fee2e2"
+        ]
+      },
+      "brand-teal": {
+        "role": "brand",
+        "displayName": "Бренд: teal",
+        "dark": "#14b8a6",
+        "tonalRamp": [
+          "#042f2e",
+          "#134e4a",
+          "#115e59",
+          "#0f766e",
+          "#0d9488",
+          "#14b8a6",
+          "#99f6e4",
+          "#f0fdfa"
+        ]
+      },
+      "brand-emerald": {
+        "role": "brand",
+        "displayName": "Бренд: emerald",
+        "dark": "#10b981",
+        "tonalRamp": [
+          "#022c22",
+          "#064e3b",
+          "#065f46",
+          "#047857",
+          "#059669",
+          "#10b981",
+          "#a7f3d0",
+          "#ecfdf5"
+        ]
+      },
+      "brand-blue": {
+        "role": "brand",
+        "displayName": "Бренд: blue",
+        "dark": "#3b82f6",
+        "tonalRamp": [
+          "#172554",
+          "#1e3a8a",
+          "#1e40af",
+          "#1d4ed8",
+          "#2563eb",
+          "#60a5fa",
+          "#bfdbfe",
+          "#dbeafe"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Вордмарк «ClimbNow» с брендовым градиентом, только стартовый экран; масштаб не больше 1.3."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Подзаголовок «Соревнования ФСР онлайн»."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Название группы в карточке, крупные сообщения."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Поля ввода, табы дисциплин, строки списков, название подгруппы."
+      },
+      "body-sm": {
+        "displayName": "Body small",
+        "purpose": "Подписи полей, табы подгрупп, баннер, служебные тексты."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Таблица результатов (табличные цифры), чипы, бейдж, сводка шапки."
+      }
+    },
+    "shadows": [
+      {
+        "name": "card",
+        "value": "0 1px 2px 0 rgba(0,0,0,0.05)",
+        "purpose": "shadow-sm: карточка группы, круглая кнопка сворачивания шапки."
+      },
+      {
+        "name": "overlay",
+        "value": "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)",
+        "purpose": "shadow-lg: выпадающий список автодополнения."
+      }
+    ],
+    "motion": [
+      {
+        "name": "live-pulse",
+        "value": "opacity 1 → 0.3 → 1, 600ms per phase, loop",
+        "purpose": "Пульсация точки онлайн-группы."
+      },
+      {
+        "name": "refresh-spin",
+        "value": "rotate 0 → 360deg, 700ms linear",
+        "purpose": "Иконка обновления таблицы по нажатию."
+      },
+      {
+        "name": "header-collapse",
+        "value": "LayoutAnimation easeInEaseOut",
+        "purpose": "Сворачивание шапки с формой."
+      },
+      {
+        "name": "dropdown",
+        "value": "Modal animationType=fade",
+        "purpose": "Появление выпадающего списка."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Таб дисциплины",
+      "kind": "nav",
+      "refersTo": "discipline-tab-active",
+      "description": "Сегменты дисциплин; активный — Свои, «скорость» отключена.",
+      "html": "<div class=\"ds-tabs\"><button class=\"ds-tab ds-tab--active\">трудность</button><button class=\"ds-tab\">боулдеринг</button><button class=\"ds-tab\" disabled>скорость</button></div>",
+      "css": ".ds-tabs { display: flex; gap: 4px; justify-content: center; } .ds-tab { font-family: system-ui, -apple-system, Roboto, sans-serif; font-size: 16px; font-weight: 500; padding: 6px 16px; border-radius: 8px; border: none; background: #e2e8f0; color: #475569; } .ds-tab--active { background: #2563eb; color: #fff; } .ds-tab:disabled { background: rgba(226,232,240,.5); color: #94a3b8; } .ds-tab:not(:disabled):active { opacity: .8; } .ds-tab:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }"
+    },
+    {
+      "name": "Чип фильтра",
+      "kind": "chip",
+      "refersTo": "filter-chip-checked",
+      "description": "Компактный переключатель фильтра с точкой-индикатором.",
+      "html": "<div style=\"display:flex;gap:8px\"><button class=\"ds-chip ds-chip--on\"><span class=\"ds-chip__dot\"></span>только команда</button><button class=\"ds-chip\"><span class=\"ds-chip__dot\"></span>только онлайн</button></div>",
+      "css": ".ds-chip { font-family: system-ui, -apple-system, Roboto, sans-serif; display: inline-flex; align-items: center; font-size: 12px; font-weight: 500; padding: 4px 12px 4px 10px; border-radius: 6px; border: 1px solid #cbd5e1; background: #fff; color: #475569; } .ds-chip__dot { width: 6px; height: 6px; border-radius: 9999px; background: #cbd5e1; margin-right: 6px; } .ds-chip--on { background: #dbeafe; border-color: #2563eb; color: #1e40af; } .ds-chip--on .ds-chip__dot { background: #2563eb; } .ds-chip:active { opacity: .7; } .ds-chip:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }"
+    },
+    {
+      "name": "Поле ввода",
+      "kind": "input",
+      "refersTo": "text-field",
+      "description": "Поле с подписью и примером; справа иконка выпадающего списка.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field__label\">код соревнований <span class=\"ds-field__hint\">(например: 2602vrn)</span></span><span class=\"ds-field__box\"><input class=\"ds-field__input\" placeholder=\"2602vrn\"><svg class=\"ds-field__icon\" viewBox=\"0 0 320 512\" width=\"10\" height=\"16\"><path fill=\"#64748b\" d=\"M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9S301 192 288 192H32c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z\"/></svg></span></label>",
+      "css": ".ds-field { font-family: system-ui, -apple-system, Roboto, sans-serif; display: block; } .ds-field__label { display: block; font-size: 14px; font-weight: 500; color: #475569; margin-bottom: 8px; } .ds-field__hint { font-weight: 400; color: #64748b; } .ds-field__box { position: relative; display: flex; align-items: center; } .ds-field__input { flex: 1; font-size: 16px; padding: 8px 36px 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; background: #fff; color: #0f172a; } .ds-field__input::placeholder { color: #64748b; } .ds-field__input:focus-visible { outline: none; border-color: #2563eb; } .ds-field__icon { position: absolute; right: 16px; }"
+    },
+    {
+      "name": "Карточка группы",
+      "kind": "card",
+      "refersTo": "group-card",
+      "description": "Прямоугольная полоса ленты; у идущей группы зелёная рамка и пульсирующая точка.",
+      "html": "<div class=\"ds-card ds-card--online\"><div class=\"ds-card__head\"><span class=\"ds-card__title\">Юноши 13-14</span><span class=\"ds-live\"></span><span style=\"flex:1\"></span><span class=\"ds-round\"><svg viewBox=\"0 0 24 24\" width=\"12\" height=\"12\" fill=\"none\" stroke=\"#475569\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"6 15 12 9 18 15\"/></svg></span></div><div class=\"ds-subtabs\"><span class=\"ds-subtab ds-subtab--active\">квалификация</span><span class=\"ds-subtab\">финал</span></div></div>",
+      "css": ".ds-card { font-family: system-ui, -apple-system, Roboto, sans-serif; background: #fff; border: 1px solid #e2e8f0; padding: 16px; box-shadow: 0 1px 2px rgba(0,0,0,.05); } .ds-card--online { border-color: #22c55e; } .ds-card__head { display: flex; align-items: center; gap: 8px; } .ds-card__title { font-size: 20px; line-height: 28px; font-weight: 700; color: #0f172a; } .ds-live { width: 12px; height: 12px; border-radius: 9999px; background: #22c55e; animation: ds-pulse 1.2s ease-in-out infinite; } @keyframes ds-pulse { 50% { opacity: .3; } } .ds-round { width: 32px; height: 32px; border-radius: 9999px; border: 1px solid #cbd5e1; display: inline-flex; align-items: center; justify-content: center; color: #475569; } .ds-subtabs { display: flex; gap: 4px; margin-top: 8px; } .ds-subtab { font-size: 14px; font-weight: 500; padding: 4px 8px; border-radius: 8px; border: 2px solid transparent; background: #e2e8f0; color: #475569; } .ds-subtab--active { border-color: #2563eb; color: #0f172a; } @media (prefers-reduced-motion: reduce) { .ds-live { animation: none; } }"
+    },
+    {
+      "name": "Таблица результатов",
+      "kind": "custom",
+      "refersTo": "results-row-own",
+      "description": "Плотная таблица на всю ширину: свои — синяя подсветка, прошедшие/призёры — зелёная, линия отсечки, приглушённые ст.# и команда.",
+      "html": "<div class=\"ds-table\"><div class=\"ds-tr ds-th\"><span class=\"ds-c ds-n ds-first\">м</span><span class=\"ds-c ds-n\">ст</span><span class=\"ds-c ds-name\">имя</span><span class=\"ds-c ds-team\">команда</span><span class=\"ds-c ds-res ds-last\">итог</span></div><div class=\"ds-tr ds-lead\"><span class=\"ds-c ds-n ds-first\">1</span><span class=\"ds-c ds-n ds-sub\">1</span><span class=\"ds-c ds-name\">Силкина Мария</span><span class=\"ds-c ds-team ds-sub\">КРСК</span><span class=\"ds-c ds-res ds-last\">124,5</span></div><div class=\"ds-tr ds-own\"><span class=\"ds-c ds-n ds-first\">2</span><span class=\"ds-c ds-n ds-sub\">4</span><span class=\"ds-c ds-name\">Мезенова Дариана</span><span class=\"ds-c ds-team ds-sub\">СПБ</span><span class=\"ds-c ds-res ds-last\">84,5</span></div><div class=\"ds-tr ds-cut\"><span class=\"ds-c ds-n ds-first\">3</span><span class=\"ds-c ds-n ds-sub\">5</span><span class=\"ds-c ds-name\">Волкова Анна</span><span class=\"ds-c ds-team ds-sub\">МСК</span><span class=\"ds-c ds-res ds-last\">69,7</span></div></div>",
+      "css": ".ds-table { font-family: system-ui, -apple-system, Roboto, sans-serif; font-size: 12px; line-height: 16px; font-weight: 500; color: #0f172a; background: #fff; } .ds-tr { display: flex; align-items: stretch; border-bottom: 1px solid #fff; } .ds-th { color: #64748b; border-bottom-color: #cbd5e1; } .ds-c { padding: 4px 1px; display: flex; align-items: center; } .ds-first { padding-left: 5px; } .ds-last { padding-right: 5px; justify-content: flex-end; text-align: right; } .ds-n { width: 28px; flex: none; } .ds-name { flex: 3; } .ds-team { flex: 2; white-space: nowrap; overflow: hidden; } .ds-res { flex: 1.5; } .ds-sub { color: #64748b; } .ds-lead { background: #bbf7d0; } .ds-own { background: #bfdbfe; } .ds-cut { border-top: 2px solid #22c55e; } @media (min-width: 640px) { .ds-c { padding-left: 4px; padding-right: 4px; } .ds-n { width: 44px; } .ds-first { padding-left: 5px; } .ds-last { padding-right: 5px; } }"
+    },
+    {
+      "name": "Ячейка боулдеринга",
+      "kind": "custom",
+      "refersTo": "boulder-cell",
+      "description": "Две половинки на трассу; заполненная — Боулдер, пустая — серая без символа.",
+      "html": "<div style=\"display:flex;gap:2px;width:120px\"><div class=\"ds-bc\"><span class=\"ds-bc__v ds-bc__v--on\">1</span><span class=\"ds-bc__v ds-bc__v--on\">1</span></div><div class=\"ds-bc\"><span class=\"ds-bc__v\">&nbsp;</span><span class=\"ds-bc__v ds-bc__v--on\">5</span></div><div class=\"ds-bc\"><span class=\"ds-bc__v\">&nbsp;</span><span class=\"ds-bc__v\">&nbsp;</span></div></div>",
+      "css": ".ds-bc { font-family: system-ui, -apple-system, Roboto, sans-serif; flex: 1; background: #e5e7eb; display: flex; flex-direction: column; } .ds-bc__v { font-size: 12px; line-height: 15px; text-align: center; } .ds-bc__v--on { background: #fca5a5; color: #111827; }"
+    },
+    {
+      "name": "Бейдж «пролезло»",
+      "kind": "chip",
+      "refersTo": "climbed-badge",
+      "description": "Счётчик пролезших в подгруппе с кнопкой обновления.",
+      "html": "<div style=\"display:flex;align-items:center;gap:8px\"><span class=\"ds-badge\">12 / 24 пролезло</span><button class=\"ds-refresh\" aria-label=\"Обновить\"><svg viewBox=\"0 0 24 24\" width=\"12\" height=\"12\" fill=\"none\" stroke=\"#1d4ed8\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 12a9 9 0 1 1-3-6.7\"/><polyline points=\"21 3 21 9 15 9\"/></svg></button></div>",
+      "css": ".ds-badge { font-family: system-ui, -apple-system, Roboto, sans-serif; font-size: 12px; font-weight: 500; padding: 2px 10px; border-radius: 9999px; background: #dbeafe; color: #1e40af; font-variant-numeric: tabular-nums; } .ds-refresh { border: none; background: none; color: #1d4ed8; font-size: 14px; transition: transform .7s linear; } .ds-refresh:active { transform: rotate(360deg); } .ds-refresh:focus-visible { outline: 2px solid #2563eb; border-radius: 4px; }"
+    },
+    {
+      "name": "Баннер офлайна",
+      "kind": "custom",
+      "refersTo": "offline-banner",
+      "description": "Полоса под шапкой, когда нет сети.",
+      "html": "<div class=\"ds-offline\">нет сети, показаны сохранённые данные</div>",
+      "css": ".ds-offline { font-family: system-ui, -apple-system, Roboto, sans-serif; background: #fef3c7; color: #92400e; font-size: 14px; text-align: center; padding: 8px 16px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Болей за своих",
+    "overview": "Интерфейс сделан ради одного жеста: открыть соревнование и сразу увидеть своих. Можно думать о нём как о трибуне, откуда видно только нужное: вся лента групп нейтральная, а цвет загорается там, где твой спортсмен, где идёт живая группа и где лидеры. Настроение спортивное и живое. Онлайн-статус пульсирует, результаты обновляются сами, у строк таблицы уверенные цветные подложки. Но энергия идёт от данных, а не от декора.\n\nПлотность высокая, компоненты компактные и утилитарные. Управление (форма, табы, чипы) занимает минимум места и сворачивается в сводку, основную площадь отдаём таблице результатов. Шрифт системный, собственного нет. Иерархия строится весом и размером, а не гарнитурой.\n\nТема светлая и тёмная, следует системной настройке. Тёмная тема собрана отдельно, а не простой инверсией: у каждого токена своё значение (см. таблицу в Colors).",
+    "keyCharacteristics": [
+      "Нейтральный холодный фон (slate), белые поверхности, цвет только смысловой.",
+      "Три смысловых цвета: **Свои** (синий), **Онлайн и лидеры** (зелёный), **Боулдер** (красный).",
+      "Плотная таблица на 100% ширины экрана, без горизонтального скролла.",
+      "Компактное управление, которое сворачивается в строку-сводку.",
+      "Лёгкие слои: карточки чуть приподняты над фоном."
+    ],
+    "rules": [
+      {
+        "name": "The Three Voices Rule",
+        "body": "В интерфейсе три смысловых цвета: Свои, Онлайн и лидеры, Боулдер. Новый насыщенный цвет вводится только под новый смысл, а не для украшения.",
+        "section": "colors"
+      },
+      {
+        "name": "The Token-Only Rule",
+        "body": "Цвета задаются только семантическими токенами (`bg-surface`, `text-fg-muted`, `bg-highlight`…) из `src/global.css` и `tailwind.config.js`, а не классами палитры Tailwind (`bg-gray-200`). Иконки берут цвет из `useIconColors()` (`src/shared/theme.ts`). Иначе ломается тёмная тема.",
+        "section": "colors"
+      },
+      {
+        "name": "The Quiet Canvas Rule",
+        "body": "Текст прямо на фоне-трибуне — не светлее `fg-muted`: `fg-subtle` на `canvas` даёт около 4.3:1, это ниже AA.",
+        "section": "colors"
+      },
+      {
+        "name": "The Lowercase Voice Rule",
+        "body": "Подписи и статусы пишутся со строчной буквы: «код соревнований», «только онлайн», «нет онлайн групп». С заглавной — только названия и ошибки.",
+        "section": "typography"
+      },
+      {
+        "name": "The Scale Only Rule",
+        "body": "Размер текста — только ролью шкалы (`text-body`, `text-caption`…). Не `text-sm`/`text-xs` и не `fontSize` числом в `StyleSheet`; `<Text>` без роли не оставлять — он получит дефолтные 14 React Native мимо шкалы.",
+        "section": "typography"
+      },
+      {
+        "name": "The Full Name Rule",
+        "body": "Имя в таблице никогда не обрезается: оно переносится на столько строк, сколько нужно. Место, стартовый номер и команда — одна строка.",
+        "section": "typography"
+      },
+      {
+        "name": "The Light Layers Rule",
+        "body": "Сильнее `shadow-lg` теней нет, цветных свечений нет. Если элемент нужно выделить, это делает цвет роли или рамка (например, зелёная рамка онлайн-карточки), а не тень.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** бери цвета только из семантических токенов (`bg-surface`, `text-fg-muted`, `bg-highlight`, `bg-live-soft`, `bg-boulder`) и `useIconColors()` для иконок — так обе темы остаются рабочими.",
+      "**Do** держи имя в таблице целиком (перенос без ограничения строк), а место, ст.# и команду — в одну строку.",
+      "**Do** приглушай второстепенные колонки (ст.#, команда) до `fg-subtle`, чтобы взгляд шёл к месту, имени и результату.",
+      "**Do** делай любую нажимаемую иконку через `IconButton`, а табы и чипы дотягивай до 48dp через `hitSlop` внутри родителя (Android обрезает зону нажатия по границам родителя).",
+      "**Do** используй один брейкпоинт 640px (`sm:` в классах, `width < 640` в JS) для плотности таблицы и сокращённых заголовков.",
+      "**Do** показывай онлайн-статус пульсацией зелёной точки (прозрачность 1 → 0.3 → 1, 600мс на фазу)."
+    ],
+    "donts": [
+      "**Don't** используй классы палитры Tailwind (`bg-gray-200`, `text-blue-800`) в компонентах — они не переключаются в тёмной теме.",
+      "**Don't** вводи новый насыщенный цвет без нового смысла: призовые места и прошедшие дальше — один зелёный, «свои» — один синий.",
+      "**Don't** используй брендовый градиент нигде, кроме вордмарка «ClimbNow».",
+      "**Don't** обрезай имя многоточием и не возвращай горизонтальный скролл таблицы.",
+      "**Don't** ставь тире-заглушки в пустые ячейки боулдеринга — пустая половинка остаётся просто серой.",
+      "**Don't** клади текст цвета `fg-subtle` прямо на фон-трибуну — только `fg-muted` и темнее."
+    ]
+  }
+}

@@ -1,15 +1,16 @@
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { onlineManager } from "@tanstack/react-query";
 import { observer } from "mobx-react-lite";
 import { useCallback, useEffect } from "react";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 
 import { DEFAULT_TEAM, DEFAULT_URL_CODE } from "@/shared/constants";
 import { rootStore } from "@/store/root.store";
+import { useIconColors } from "@/shared/theme";
 
 import Autocomplete from "@/shared/components/Autocomplete/Autocomplete";
 import { Item } from "@/shared/components/Autocomplete/Autocomplete.types";
 import FilterChip from "@/shared/components/FilterChip/FilterChip";
+import IconButton from "@/shared/components/IconButton/IconButton";
 import LinkToEvent from "@/shared/components/LinkToEvent/LinkToEvent";
 import TextInput from "@/shared/components/TextInput/TextInput";
 import { Event } from "@/shared/types/events";
@@ -22,6 +23,7 @@ export default observer(function ResultsForm() {
   const teamsStore = rootStore.teamsStore;
   const disciplinesStore = rootStore.disciplinesStore;
   const eventsStore = rootStore.eventsStore;
+  const iconColors = useIconColors();
   const command = formStore.command as Item | null;
   const names = formStore.names;
   const { isCommandFilterEnabled, isNamesFilterEnabled, isOnlyOnline } =
@@ -73,59 +75,64 @@ export default observer(function ResultsForm() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const filterModeToggle = (
+    <IconButton
+      icon={isNamesFilterEnabled ? "users" : "flag"}
+      label={
+        isNamesFilterEnabled
+          ? "Искать по команде"
+          : "Искать по фамилиям скалолазов"
+      }
+      color={iconColors.accent}
+      onPress={() => formStore.setIsNamesFilterEnabled(!isNamesFilterEnabled)}
+    />
+  );
+
   return (
     <View className="gap-4">
-      <View className="relative">
-        <Autocomplete
-          value={formStore.code}
-          onChange={handleUrlChange}
-          placeholder="2602vrn"
-          data={eventsStore.events as unknown as Item[]}
-          label="код соревнований"
-          dataLabel={DEFAULT_URL_CODE}
-          property="link"
-          renderItem={(item: Item, value: Item | null) =>
-            EventTemplate(item as unknown as Event, value as string | null)
-          }
+      <Autocomplete
+        value={formStore.code}
+        onChange={handleUrlChange}
+        placeholder="2602vrn"
+        data={eventsStore.events as unknown as Item[]}
+        label="код соревнований"
+        dataLabel={DEFAULT_URL_CODE}
+        property="link"
+        isLoading={eventsStore.isEventsLoading}
+        labelAction={
+          disciplinesStore.groupsData ? (
+            <LinkToEvent code={formStore.code} />
+          ) : null
+        }
+        renderItem={(item: Item, value: Item | null) =>
+          EventTemplate(item as unknown as Event, value as string | null)
+        }
+      />
+
+      {isNamesFilterEnabled ? (
+        <TextInput
+          value={names}
+          onChange={handleNamesChange}
+          placeholder="Петров, Иванов"
+          label="скалолазы"
+          dataLabel="Петров, Иванов"
+          labelAction={filterModeToggle}
         />
-        {disciplinesStore.groupsData && <LinkToEvent code={formStore.code} />}
-      </View>
+      ) : (
+        <Autocomplete
+          value={command}
+          onChange={handleCommandChange}
+          placeholder={DEFAULT_TEAM}
+          data={teamsStore.teams as Item[]}
+          isLoading={teamsStore.isTeamsLoading}
+          label="команда"
+          dataLabel={DEFAULT_TEAM}
+          labelAction={filterModeToggle}
+        />
+      )}
 
-      <View className="relative">
-        {isNamesFilterEnabled ? (
-          <TextInput
-            value={names}
-            onChange={handleNamesChange}
-            placeholder="Петров, Иванов"
-            label="скалолазы"
-            dataLabel="Петров, Иванов"
-          />
-        ) : (
-          <Autocomplete
-            value={command}
-            onChange={handleCommandChange}
-            placeholder={DEFAULT_TEAM}
-            data={teamsStore.teams as Item[]}
-            label="команда"
-            dataLabel={DEFAULT_TEAM}
-          />
-        )}
-        <Pressable
-          onPress={() =>
-            formStore.setIsNamesFilterEnabled(!isNamesFilterEnabled)
-          }
-          className="absolute top-0 right-0 p-1"
-        >
-          <FontAwesome6
-            name={isNamesFilterEnabled ? "users" : "flag"}
-            solid
-            size={14}
-            color="#2563eb"
-          />
-        </Pressable>
-      </View>
-
-      <View className="flex-row flex-wrap gap-2">
+      {/* -my-2.5 py-2.5: у чипов зона нажатия 48dp (hitSlop) должна лежать внутри родителя, иначе Android её обрезает */}
+      <View className="flex-row flex-wrap gap-2 -my-2.5 py-2.5">
         <FilterChip
           checked={isCommandFilterEnabled}
           onToggle={() =>

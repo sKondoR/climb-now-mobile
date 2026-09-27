@@ -74,10 +74,10 @@ export function getRowClasses({ result, command, names, isNamesFilterEnabled, is
   const isSameNameRow = isNamesFilterEnabled && isNameMatch(result.name, names)
   const rank = Number.parseInt(result['rank'])
   if (isSameCommandRow || isSameNameRow) {
-    return ' bg-blue-200'
+    return ' bg-highlight'
   }
   if (result.isHighlighted || (result['rank'] && isFinal && PRIZE_PLACES >= rank)) {
-    return ' bg-green-200'
+    return ' bg-live-soft'
   }
   return ''
 }
@@ -109,7 +109,7 @@ export function getFinalBorderClasses(results: ResultsItem[]): string[] {
       shouldFinalBorder = true
     }
     if (shouldFinalBorder && !result.isHighlighted) {
-      finalBorderClass = 'border-t-2 border-t-green-500'
+      finalBorderClass = 'border-t-2 border-t-live-line'
       shouldFinalBorder = false
     }
     return finalBorderClass

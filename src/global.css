@@ -1,3 +1,71 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Семантические цвета (RGB-каналы, чтобы работали модификаторы прозрачности вида bg-surface/70).
+   Тёмная тема — через системную схему (app.json → userInterfaceStyle: automatic). */
+:root {
+  --canvas: 241 245 249;         /* фон экрана — slate-100 */
+  --surface: 255 255 255;        /* карточки, шапка, выпадающие списки */
+  --surface-muted: 226 232 240;  /* неактивные табы, подложки — slate-200 */
+  --line: 203 213 225;           /* рамки полей — slate-300 */
+  --line-subtle: 226 232 240;    /* разделители — slate-200 */
+  --fg: 15 23 42;                /* основной текст — slate-900 */
+  --fg-muted: 71 85 105;         /* вторичный текст — slate-600 */
+  --fg-subtle: 100 116 139;      /* подписи, плейсхолдеры — slate-500 */
+  --fg-disabled: 148 163 184;    /* slate-400 */
+
+  --accent: 37 99 235;           /* действия и выбор — blue-600 */
+  --accent-fg: 29 78 216;        /* текст/иконки акцента — blue-700 */
+  --accent-soft: 219 234 254;    /* активные чипы фильтров, бейдж «пролезло» — blue-100 */
+  --accent-soft-fg: 30 64 175;   /* blue-800 */
+
+  --highlight: 191 219 254;      /* «моя команда», выбранный пункт списка — blue-200 */
+
+  --live: 34 197 94;             /* онлайн — green-500 */
+  --live-soft: 187 247 208;      /* прошёл дальше, призовые места — green-200 */
+  --live-faint: 240 253 244;     /* текущие соревнования в списке — green-50 */
+  --live-line: 34 197 94;        /* граница зоны прохода — green-500 */
+
+  --boulder: 252 165 165;        /* red-300 */
+  --boulder-fg: 17 24 39;        /* gray-900 */
+  --boulder-empty: 229 231 235;  /* gray-200 */
+
+  --warn-soft: 254 243 199;      /* amber-100 */
+  --warn-fg: 146 64 14;          /* amber-800 */
+  --danger: 220 38 38;           /* red-600 */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --canvas: 2 6 23;            /* slate-950 */
+    --surface: 15 23 42;         /* slate-900 */
+    --surface-muted: 30 41 59;   /* slate-800 */
+    --line: 51 65 85;            /* slate-700 */
+    --line-subtle: 30 41 59;     /* slate-800 */
+    --fg: 241 245 249;           /* slate-100 */
+    --fg-muted: 203 213 225;     /* slate-300 */
+    --fg-subtle: 148 163 184;    /* slate-400 */
+    --fg-disabled: 71 85 105;    /* slate-600 */
+
+    --accent: 37 99 235;         /* blue-600 — белый текст на нём держит 5.2:1 */
+    --accent-fg: 96 165 250;     /* blue-400 */
+    --accent-soft: 23 37 84;     /* blue-950 */
+    --accent-soft-fg: 191 219 254; /* blue-200 */
+
+    --highlight: 30 58 138;      /* blue-900 */
+
+    --live: 74 222 128;          /* green-400 */
+    --live-soft: 20 83 45;       /* green-900 */
+    --live-faint: 5 46 22;       /* green-950 */
+    --live-line: 34 197 94;      /* green-500 */
+
+    --boulder: 127 29 29;        /* red-900 */
+    --boulder-fg: 254 226 226;   /* red-100 */
+    --boulder-empty: 55 65 81;   /* gray-700 */
+
+    --warn-soft: 69 46 10;
+    --warn-fg: 253 230 138;      /* amber-200 */
+    --danger: 185 28 28;         /* red-700 */
+  }
+}

@@ -36,7 +36,7 @@ export class EventsStore {
           const dateB = b.startdate || b.date
           return dateB.localeCompare(dateA)
         }) || []
-        this.isEventsLoading = false
+        this.isEventsLoading = result.isLoading
         this.error = result.error instanceof Error ? result.error.message : null
       })
     })

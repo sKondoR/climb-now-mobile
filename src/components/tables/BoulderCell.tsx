@@ -1,6 +1,8 @@
 import { memo } from 'react'
 import { View, Text } from 'react-native'
 
+const TABULAR_NUMS = { fontVariant: ['tabular-nums' as const] }
+
 interface BoulderCellProps {
   value: string
 }
@@ -8,12 +10,12 @@ interface BoulderCellProps {
 const BoulderCell = memo(({ value }: BoulderCellProps) => {
   const [val1, val2] = value.split('/')
   return (
-    <View className="bg-gray-200">
-      <Text className={`text-xs text-center leading-tight ${val1 !== ' ' ? 'bg-red-300' : 'text-white/0'}`}>
-        {val1 !== ' ' ? val1 : '-'}
+    <View className="bg-boulder-empty">
+      <Text style={TABULAR_NUMS} className={`text-caption text-center leading-tight ${val1 !== ' ' ? 'bg-boulder text-boulder-fg' : ''}`}>
+        {val1}
       </Text>
-      <Text className={`text-xs text-center leading-tight ${val2 !== ' ' ? 'bg-red-300' : 'text-white/0'}`}>
-        {val2 !== ' ' ? val2 : '-'}
+      <Text style={TABULAR_NUMS} className={`text-caption text-center leading-tight ${val2 !== ' ' ? 'bg-boulder text-boulder-fg' : ''}`}>
+        {val2}
       </Text>
     </View>
   )

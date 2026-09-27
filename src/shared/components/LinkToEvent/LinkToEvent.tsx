@@ -1,9 +1,9 @@
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import * as Linking from "expo-linking";
-import { Pressable } from "react-native";
 
 import { EXTERNAL_EVENT_BASE_URL } from "@/shared/constants";
 import { sanitizeEventCode } from "@/shared/utils/forms.utils";
+import { useIconColors } from "@/shared/theme";
+import IconButton from "../IconButton/IconButton";
 
 interface LinkToEventProps {
   code: string | null;
@@ -11,20 +11,17 @@ interface LinkToEventProps {
 
 export default function LinkToEvent({ code }: LinkToEventProps) {
   const sanitizedCode = sanitizeEventCode(code);
+  const iconColors = useIconColors();
   if (!sanitizedCode) return null;
   return (
-    <Pressable
+    <IconButton
+      icon="up-right-from-square"
+      role="link"
+      label="Открыть соревнование на сайте ФСР"
+      color={iconColors.brand}
       onPress={() =>
         Linking.openURL(`${EXTERNAL_EVENT_BASE_URL}${sanitizedCode}/index.html`)
       }
-      className="absolute top-0 right-0 p-1"
-    >
-      <FontAwesome6
-        name="up-right-from-square"
-        solid
-        size={14}
-        color="#14b8a6"
-      />
-    </Pressable>
+    />
   );
 }

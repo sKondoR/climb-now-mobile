@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { FlatList, Text, View } from 'react-native'
+import { FlatList, RefreshControl, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { observer } from 'mobx-react-lite'
 
@@ -12,12 +12,13 @@ import OfflineBanner from '@/components/layout/OfflineBanner'
 import DisciplineTabs from '@/components/groups/DisciplineTabs'
 import GroupCard from '@/components/groups/GroupCard'
 import AppTitle from '@/components/AppTitle'
+import { useIconColors } from '@/shared/theme'
 
 function CenteredMessage({ title, subtitle }: { title: string; subtitle?: string }) {
   return (
-    <View className="py-12 items-center px-6">
-      <Text className="text-xl font-semibold text-gray-600 text-center mb-2">{title}</Text>
-      {subtitle && <Text className="text-gray-500 text-center">{subtitle}</Text>}
+    <View className="py-12 items-center px-6" accessibilityLiveRegion="polite">
+      <Text className="text-title font-semibold text-fg-muted text-center mb-2">{title}</Text>
+      {subtitle && <Text className="text-body-sm text-fg-muted text-center">{subtitle}</Text>}
     </View>
   )
 }
@@ -28,6 +29,8 @@ const GroupSeparator = () => <View className="h-4" />
 
 export default observer(function HomeScreen() {
   const [activeTab, setActiveTab] = useState(0)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const iconColors = useIconColors()
   const disciplinesStore = rootStore.disciplinesStore
   const formStore = rootStore.formStore
 
@@ -60,7 +63,7 @@ export default observer(function HomeScreen() {
       <>
         <DisciplineTabs disciplines={disciplinesStore.groupsData} setActiveTab={setActiveTab} activeTab={activeTab} />
         {!filteredGroups.length && discipline.groups.length ? (
-          <Text className="text-center text-gray-500 mb-4">нет онлайн групп</Text>
+          <Text className="text-body-sm text-center text-fg-muted mb-4">нет онлайн групп</Text>
         ) : null}
       </>
     )
@@ -68,11 +71,20 @@ export default observer(function HomeScreen() {
 
   const showGroups = !disciplinesStore.isGroupsLoading && !!discipline
 
+  const handleRefresh = async () => {
+    setIsRefreshing(true)
+    try {
+      await disciplinesStore.refresh()
+    } finally {
+      setIsRefreshing(false)
+    }
+  }
+
   // Без edges — по умолчанию учитываются все стороны: в портретной ориентации это
   // статус-бар сверху и жестовая/навигационная панель снизу, а в альбомной — ещё и
   // боковая навигационная панель Android (3 кнопки), которая иначе перекрывает контент.
   return (
-    <SafeAreaView className="flex-1 bg-gray-70">
+    <SafeAreaView className="flex-1 bg-canvas">
       <FlatList
         data={showGroups ? filteredGroups : []}
         keyExtractor={keyExtractor}
@@ -87,6 +99,15 @@ export default observer(function HomeScreen() {
         }
         contentContainerClassName="py-4"
         keyboardShouldPersistTaps="handled"
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={handleRefresh}
+            colors={[iconColors.accent]}
+            tintColor={iconColors.accent}
+            progressBackgroundColor={iconColors.surface}
+          />
+        }
       />
     </SafeAreaView>
   )

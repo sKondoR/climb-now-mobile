@@ -45,14 +45,18 @@ export class DisciplinesStore {
 
   // В отличие от веб-версии, здесь нет адресной строки для синхронизации code —
   // deep linking с предзаполненным code/names обрабатывает FormStore.loadFromUrl (см. 2.5 плана миграции).
-  async fetchGroups(code: string, name?: string) {
-    this.setGroupsData(null)
-    this.setGroupsError(null)
+  // silent — фоновое обновление (pull-to-refresh): уже показанные группы не сбрасываются
+  // и не заменяются состоянием загрузки, а при неудаче остаются на экране.
+  async fetchGroups(code: string, name?: string, { silent = false }: { silent?: boolean } = {}) {
+    if (!silent) {
+      this.setGroupsData(null)
+      this.setGroupsError(null)
+    }
     if (code?.length < MIN_URL_CODE_LENGTH) {
       this.setIsGroupsLoading(false)
       return
     }
-    this.setIsGroupsLoading(true)
+    if (!silent) this.setIsGroupsLoading(true)
 
     const suffixes = getSuffixes(name)
     let data = null
@@ -73,7 +77,7 @@ export class DisciplinesStore {
         }
       }
 
-      this.setGroupsData(data)
+      if (data || !silent) this.setGroupsData(data)
       if (data && usedCode !== code) {
         this.formStore.setCode(usedCode)
         const event = this.eventsStore.events.find((ev) => ev.link === code)
@@ -82,10 +86,21 @@ export class DisciplinesStore {
         }
       }
     } catch (error) {
-      this.setGroupsError(error instanceof Error ? error.message : 'Unknown error')
+      if (!silent) this.setGroupsError(error instanceof Error ? error.message : 'Unknown error')
     } finally {
-      this.setIsGroupsLoading(false)
+      if (!silent) this.setIsGroupsLoading(false)
     }
+  }
+
+  // Pull-to-refresh: статусы групп и все открытые таблицы результатов обновляются разом
+  async refresh() {
+    const code = this.formStore.code
+    const event = this.eventsStore.events.find((ev) => ev.link === code)
+    await Promise.all([
+      this.fetchGroups(code, event?.name, { silent: true }),
+      this.queryClient.refetchQueries({ queryKey: ['results'], type: 'active' }),
+      this.eventsStore.events.length ? null : this.eventsStore.refetchEvents(),
+    ])
   }
 
   refetchGroups() {

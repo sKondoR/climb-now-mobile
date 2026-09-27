@@ -127,24 +127,24 @@ describe('tables.utils', () => {
       isNamesFilterEnabled: false
     }
 
-    it('should return bg-blue-200 when isSameCommandRow is true', () => {
+    it('should return bg-highlight when isSameCommandRow is true', () => {
       const classes = getRowClasses({
         ...baseProps,
         result: { ...mockLeadQualItem, command: 'СПБ' },
         isNamesFilterEnabled: false
       })
-      expect(classes).toBe(' bg-blue-200')
+      expect(classes).toBe(' bg-highlight')
     })
 
-    it('should return bg-blue-200 when isSameNameRow is true', () => {
+    it('should return bg-highlight when isSameNameRow is true', () => {
       const classes = getRowClasses({
         ...baseProps,
         isNamesFilterEnabled: true
       })
-      expect(classes).toBe(' bg-blue-200')
+      expect(classes).toBe(' bg-highlight')
     })
 
-    it('should return bg-green-200 when isHighlighted is true', () => {
+    it('should return bg-live-soft when isHighlighted is true', () => {
       const props = {
         ...baseProps,
         isNamesFilterEnabled: false,
@@ -153,10 +153,10 @@ describe('tables.utils', () => {
         result: { ...mockLeadQualItem, isHighlighted: true },
       }
       const classes = getRowClasses(props)
-      expect(classes).toBe(' bg-green-200')
+      expect(classes).toBe(' bg-live-soft')
     })
 
-    it('should return bg-green-200 when isFinalRow is true', () => {
+    it('should return bg-live-soft when isFinalRow is true', () => {
       const props = {
         ...baseProps,
         isNamesFilterEnabled: false,
@@ -166,7 +166,7 @@ describe('tables.utils', () => {
         isFinal: true,
       }
       const classes = getRowClasses(props)
-      expect(classes).toBe(' bg-green-200')
+      expect(classes).toBe(' bg-live-soft')
     })
 
     it('should return empty string when no conditions match', () => {

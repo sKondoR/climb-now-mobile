@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Animated, Easing, Pressable } from 'react-native'
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6'
+import { Animated, Easing } from 'react-native'
+
+import { useIconColors } from '@/shared/theme'
+import IconButton from '@/shared/components/IconButton/IconButton'
 
 interface RefreshTableBtnProps {
   refetch: () => void
@@ -8,6 +10,7 @@ interface RefreshTableBtnProps {
 
 export default function RefreshTableBtn({ refetch }: RefreshTableBtnProps) {
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const iconColors = useIconColors()
   // useState вместо useRef — см. StatusIcon.tsx.
   const [spin] = useState(() => new Animated.Value(0))
 
@@ -19,18 +22,20 @@ export default function RefreshTableBtn({ refetch }: RefreshTableBtnProps) {
 
   const rotate = spin.interpolate({ inputRange: [0, 1], outputRange: ['0deg', '360deg'] })
 
+  // -my-3.5 -mr-3: зона нажатия 48dp не раздувает строку заголовка подгруппы
   return (
-    <Pressable
-      className="ml-2"
+    <IconButton
+      icon="rotate-right"
+      label="Обновить результаты"
+      color={iconColors.accent}
+      size={12}
+      iconStyle={{ transform: [{ rotate }] }}
+      className="-my-3.5 -mr-3"
       onPress={() => {
         setIsRefreshing(true)
         refetch()
         setTimeout(() => setIsRefreshing(false), 700)
       }}
-    >
-      <Animated.View style={{ transform: [{ rotate }] }}>
-        <FontAwesome6 name="rotate-right" solid size={12} color="#2563eb" />
-      </Animated.View>
-    </Pressable>
+    />
   )
 }

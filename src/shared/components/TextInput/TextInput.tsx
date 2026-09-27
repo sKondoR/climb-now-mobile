@@ -1,9 +1,10 @@
-import { useState } from 'react'
-import { Pressable, Text, TextInput as RNTextInput, View } from 'react-native'
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6'
+import { ReactNode, useState } from 'react'
+import { Text, TextInput as RNTextInput, View } from 'react-native'
 
 import { useDebounce } from '@/shared/hooks/useDebounce'
 import ShareNamesBtn from '../ShareNamesBtn/ShareNamesBtn'
+import IconButton from '../IconButton/IconButton'
+import { useIconColors } from '@/shared/theme'
 
 interface TextInputProps {
   value: string
@@ -12,6 +13,8 @@ interface TextInputProps {
   label?: string
   dataLabel?: string
   debounceDelay?: number
+  // Кнопка-иконка справа от подписи (переключатель команда/фамилии)
+  labelAction?: ReactNode
 }
 
 export const TextInput = ({
@@ -21,9 +24,11 @@ export const TextInput = ({
   label = '',
   dataLabel = '',
   debounceDelay = 800,
+  labelAction,
 }: TextInputProps) => {
   const [text, setText] = useState(value)
   const [isOpened, setIsOpened] = useState(false)
+  const iconColors = useIconColors()
 
   const debouncedOnChange = useDebounce(onChange, debounceDelay)
 
@@ -34,25 +39,39 @@ export const TextInput = ({
 
   return (
     <View className="w-full">
-      {label && (
-        <Text className="text-sm font-medium text-gray-700 mb-2">
-          {label}
-          {dataLabel ? <Text className="text-xs text-gray-500"> (например: {dataLabel})</Text> : null}
-        </Text>
+      {(label || labelAction) && (
+        <View className="flex-row items-center mb-2 min-h-5">
+          <Text
+            className="flex-1 text-body-sm font-medium text-fg-muted"
+            importantForAccessibility="no"
+            accessibilityElementsHidden
+          >
+            {label}
+            {dataLabel ? <Text className="font-normal text-fg-subtle"> (например: {dataLabel})</Text> : null}
+          </Text>
+          {labelAction ? <View className="flex-row -my-3.5 -mr-3">{labelAction}</View> : null}
+        </View>
       )}
       <View className="relative flex-row items-start">
         <RNTextInput
           value={text}
           onChangeText={handleChangeText}
           placeholder={placeholder}
+          placeholderTextColor={iconColors.subtle}
+          accessibilityLabel={label || placeholder}
+          accessibilityHint={dataLabel ? `фамилии через запятую, например: ${dataLabel}` : undefined}
           multiline={isOpened}
           numberOfLines={isOpened ? 4 : 1}
-          className="flex-1 px-3 py-2 pr-16 border border-gray-300 rounded-md text-base"
+          className="flex-1 min-h-12 px-3 py-3 pr-24 border border-line rounded-md text-body text-fg bg-surface"
         />
-        <Pressable onPress={() => setIsOpened((prev) => !prev)} className="absolute right-9 top-1 p-2">
-          <FontAwesome6 name={isOpened ? 'compress' : 'expand'} solid size={14} color="#6b7280" />
-        </Pressable>
-        <View className="absolute right-1 top-1">
+        <View className="absolute right-0 top-0 flex-row">
+          <IconButton
+            icon={isOpened ? 'compress' : 'expand'}
+            label={isOpened ? 'Свернуть поле' : 'Развернуть поле'}
+            color={iconColors.subtle}
+            expanded={isOpened}
+            onPress={() => setIsOpened((prev) => !prev)}
+          />
           <ShareNamesBtn />
         </View>
       </View>

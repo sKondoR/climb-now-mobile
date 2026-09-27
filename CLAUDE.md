@@ -52,11 +52,11 @@ Run a single test file: `npx jest src/shared/utils/date.utils.test.ts`.
 ### UI: NativeWind, no direct 1:1 DOM ports
 
 Components under `src/components/` and `src/shared/components/` are RN rewrites of the web app's components, not direct ports — the biggest departures:
-- `Autocomplete` closes its dropdown via a `Modal` + `Pressable` backdrop instead of the web version's `document.addEventListener('mousedown', ...)`.
+- `Autocomplete` is a field that opens a bottom sheet (`Modal` with its own search input and list) instead of the web version's inline dropdown — the field stays usable with no list (manual entry).
 - `Table` renders as nested `View`s in a horizontal `ScrollView` (fixed-width columns via `getTableConfig`) instead of an HTML `<table>`.
 - Icons use `@expo/vector-icons/FontAwesome6` instead of `@fortawesome/react-fontawesome`.
 - The web app's `LazyLoader` (`IntersectionObserver`-based lazy mount) was dropped per the migration plan; the group list in `src/app/index.tsx` renders via a virtualized `FlatList` (header, discipline tabs and status messages live in `ListHeaderComponent`; spacing between cards is an `ItemSeparatorComponent`). `@shopify/flash-list` isn't installed — consider it only if `FlatList` proves too slow.
-- `react-compiler` is enabled (`app.json` → `experiments.reactCompiler`), which is strict about mutating variables during render and calling `setState` synchronously inside `useEffect`. `tables.utils.ts`'s `getFinalBorderClasses()` and the derived-state pattern in `Autocomplete`/`useFetchResults` exist specifically to satisfy that lint (`npm run lint`) — don't reintroduce a `let` mutated inside a `.map()` in a render body or an effect that just mirrors props/query state into local state.
+- `react-compiler` is enabled (`app.json` → `experiments.reactCompiler`), which is strict about mutating variables during render and calling `setState` synchronously inside `useEffect`. `tables.utils.ts`'s `getFinalBorderClasses()` and the derived-state pattern in `useFetchResults` exist specifically to satisfy that lint (`npm run lint`) — don't reintroduce a `let` mutated inside a `.map()` in a render body or an effect that just mirrors props/query state into local state.
 
 ### Not yet done
 

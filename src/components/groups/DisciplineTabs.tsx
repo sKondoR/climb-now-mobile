@@ -15,8 +15,10 @@ export default function DisciplineTabs({ disciplines, setActiveTab, activeTab }:
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      className="mb-3"
-      contentContainerClassName="grow gap-1 px-4 justify-center"
+      // -mt-1.5 + py-1.5: зона нажатия табов (hitSlop 6) лежит внутри ScrollView
+      className="-mt-1.5 mb-1.5"
+      accessibilityRole="tablist"
+      contentContainerClassName="grow gap-1 px-4 py-1.5 justify-center"
     >
       {disciplines.map(({ discipline }, index: number) => {
         const isDisabled = discipline === DISCIPLINES.SPEED
@@ -26,11 +28,14 @@ export default function DisciplineTabs({ disciplines, setActiveTab, activeTab }:
             key={`${discipline}-${index}`}
             disabled={isDisabled}
             onPress={() => setActiveTab(index)}
+            hitSlop={{ top: 6, bottom: 6 }}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: isActive, disabled: isDisabled }}
             className={`px-4 py-1.5 rounded-lg ${
-              isActive ? 'bg-blue-600' : isDisabled ? 'bg-gray-100' : 'bg-gray-200'
+              isActive ? 'bg-accent' : isDisabled ? 'bg-surface-muted/50' : 'bg-surface-muted'
             }`}
           >
-            <Text className={`text-base font-medium ${isActive ? 'text-white' : isDisabled ? 'text-gray-300' : 'text-gray-700'}`}>
+            <Text className={`text-body font-medium ${isActive ? 'text-white' : isDisabled ? 'text-fg-disabled' : 'text-fg-muted'}`}>
               {discipline}
             </Text>
           </Pressable>

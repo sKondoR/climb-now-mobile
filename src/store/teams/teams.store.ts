@@ -30,7 +30,7 @@ export class TeamsStore {
     this.teamsQueryObserver.subscribe((result) => {
       runInAction(() => {
         this.teams = result?.data || []
-        this.isTeamsLoading = false
+        this.isTeamsLoading = result.isLoading
         this.error = result.error?.message || null
       })
     })
