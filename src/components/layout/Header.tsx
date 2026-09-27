@@ -5,6 +5,7 @@ import { observer } from 'mobx-react-lite'
 import { rootStore } from '@/store/root.store'
 import ResultsForm from '@/components/forms/ResultsForm'
 import { useIconColors } from '@/shared/theme'
+import { useReduceMotion } from '@/shared/hooks/useReduceMotion'
 import IconButton from '@/shared/components/IconButton/IconButton'
 
 const HeaderFormValues = observer(function HeaderFormValues() {
@@ -34,9 +35,11 @@ const HeaderFormValues = observer(function HeaderFormValues() {
 export default function Header() {
   const [isExpanded, setIsExpanded] = useState(true)
   const iconColors = useIconColors()
+  const reduceMotion = useReduceMotion()
 
   const toggleExpanded = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+    // При «уменьшить движение» шапка сворачивается мгновенно
+    if (!reduceMotion) LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     setIsExpanded((prev) => !prev)
   }
 

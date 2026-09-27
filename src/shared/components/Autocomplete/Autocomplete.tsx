@@ -18,6 +18,7 @@ import { Item } from './Autocomplete.types'
 import BaseTemplate from './BaseTemplate'
 import IconButton from '../IconButton/IconButton'
 import { useIconColors } from '@/shared/theme'
+import { useReduceMotion } from '@/shared/hooks/useReduceMotion'
 
 type RenderItem<T extends Item = string | Record<string, unknown>> = (item: T, value: T | null) => ReactNode
 
@@ -64,6 +65,8 @@ export const Autocomplete = <T extends Item = string>({
   const { height: windowHeight } = useWindowDimensions()
   const insets = useSafeAreaInsets()
   const iconColors = useIconColors()
+  // При «уменьшить движение» панель не выезжает снизу, а проявляется
+  const reduceMotion = useReduceMotion()
   // Высота клавиатуры отслеживается вручную: на Android (edge-to-edge, SDK 57) окно под
   // клавиатуру не сжимается и KeyboardAvoidingView не работает — без отступа клавиатура
   // перекрывала низ панели и список нельзя было докрутить до конца.
@@ -162,7 +165,7 @@ export const Autocomplete = <T extends Item = string>({
         </View>
       </Pressable>
 
-      <Modal visible={isOpen} transparent animationType="slide" onRequestClose={close} statusBarTranslucent>
+      <Modal visible={isOpen} transparent animationType={reduceMotion ? 'fade' : 'slide'} onRequestClose={close} statusBarTranslucent>
         <View className="flex-1">
           {/* Затемнение — отдельный слой, а не обёртка панели: Pressable объединяет потомков
               в один элемент для скринридера, и пункты списка стали бы недоступны. */}

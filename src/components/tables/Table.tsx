@@ -38,8 +38,10 @@ const WRAPPED_PROPS = ['name', 'score', 'mark']
 // Цифры одинаковой ширины — колонки не «гуляют» при обновлении результатов.
 // fontVariant напрямую, а не класс tabular-nums: NativeWind собирает его через CSS-переменные.
 const TABULAR_NUMS = { fontVariant: ['tabular-nums' as const] }
-// Второстепенные колонки — приглушённым цветом, чтобы взгляд шёл к месту, имени и результату
-const SECONDARY_PROPS = ['stRank', 'command']
+// Второстепенные колонки — приглушённым цветом, чтобы взгляд шёл к месту, имени и результату.
+// На подсвеченных строках (свои, лидеры) — на ступень темнее (fg-muted): fg-subtle на цветном фоне
+// в тёмной теме опускается ниже 4.5:1
+const SECONDARY_PROPS = ['stRank', 'command', 'qRank']
 
 // Для скринридера: «ст.#» и «тр.1» читаются плохо, поэтому озвучиваются полные названия.
 const SPOKEN_COL_NAMES: Record<string, string> = {
@@ -66,28 +68,37 @@ const getSpokenValue = (value?: string) => {
 }
 
 // Ширины колонок в dp при обычном размере шрифта; все умножаются на системный fontScale,
-// чтобы при крупном шрифте цифры и имена не обрезались. Место, ст.# и место в квалификации —
-// до 3 цифр, им хватает фиксированной ширины (кв.свод от 640px — 56, чтобы влез полный заголовок).
-const NARROW_COLS = ['rank', 'stRank', 'qRank']
-const getFixedWidth = (prop: string, isNarrow: boolean) => {
-  if (isNarrow) return 28
-  return prop === 'qRank' ? 56 : 44
+// чтобы при крупном шрифте цифры и имена не обрезались.
+// Фиксированные колонки — по содержимому: место, ст.#, место в квалификации (до 3 цифр;
+// кв.свод от 640px — 56, чтобы влез полный заголовок), команда (коды вроде «КРСК»),
+// результат и баллы («TOP», «45+», «124,5»). Свободное место забирает имя, а не они.
+const getFixedWidth = (prop: string | undefined, isNarrow: boolean) => {
+  if (prop === 'rank' || prop === 'stRank') return isNarrow ? 28 : 44
+  if (prop === 'qRank') return isNarrow ? 28 : 56
+  if (prop === 'command') return 44
+  if (prop === 'score' || prop === 'mark') return 48
+  return null
 }
-// flex — доля свободной ширины, min — ниже этого колонка не сжимается
+// Гибкие колонки: flex — доля свободной ширины, min — ниже этого колонка не сжимается.
+// Минимумы — по реальному содержимому: Android не сжимает ячейку уже её содержимого
+// (самое длинное слово имени, двузначное число в трассе), поэтому заниженный минимум
+// даёт «таблица помещается», а последняя колонка на деле уезжает за край без скролла.
+// Трассы боулдеринга и промежуточные колонки делят ширину с именем, но в меньшей доле.
 const getFlexCol = (prop?: string) => {
-  if (prop === 'name') return { flex: 3, min: 72 }
-  if (prop === 'command') return { flex: 2, min: 36 }
-  if (prop === 'score' || prop === 'mark') return { flex: 1.5, min: 36 }
-  if (prop && /^r\d$/.test(prop)) return { flex: 1, min: 14 }
+  if (prop === 'name') return { flex: 3, min: 80 }
+  if (prop && /^r\d$/.test(prop)) return { flex: 1, min: 18 }
   return { flex: 1, min: 28 }
 }
 const getColStyle = (prop: string | undefined, isNarrow: boolean, fontScale: number): ViewStyle => {
-  if (prop && NARROW_COLS.includes(prop)) return { width: getFixedWidth(prop, isNarrow) * fontScale }
+  const fixed = getFixedWidth(prop, isNarrow)
+  if (fixed !== null) return { width: fixed * fontScale }
   const { flex, min } = getFlexCol(prop)
-  return { flex, minWidth: min * fontScale }
+  // flexBasis: 0 обязательно — иначе база считается от ширины содержимого, и в каждой строке
+  // колонки получают разную ширину (длинное имя сдвигает команду вправо)
+  return { flexGrow: flex, flexShrink: 1, flexBasis: 0, minWidth: min * fontScale }
 }
 const getColMinWidth = (prop: string | undefined, isNarrow: boolean, fontScale: number) =>
-  (prop && NARROW_COLS.includes(prop) ? getFixedWidth(prop, isNarrow) : getFlexCol(prop).min) * fontScale
+  (getFixedWidth(prop, isNarrow) ?? getFlexCol(prop).min) * fontScale
 
 export default function Table({
   subGroup,
@@ -134,41 +145,12 @@ export default function Table({
 
   const finalBorderClasses = getFinalBorderClasses(filteredResults)
   const minTableWidth = config.reduce((sum, col) => sum + getColMinWidth(col.prop, isNarrow, fontScale), 0) + 10
-  const needsScroll = availableWidth > 0 && minTableWidth > availableWidth
+  // Горизонтальный скролл — только при увеличенном системном шрифте: при обычном таблица всегда
+  // на всю ширину (минимумы колонок — осторожная оценка и при обычном шрифте включали бы скролл зря)
+  const needsScroll = fontScale > 1 && availableWidth > 0 && minTableWidth > availableWidth
 
-  return (
-    <View className="mt-2">
-      <View className="flex-row items-center justify-between mb-2">
-        <Text className="text-body font-semibold text-fg" accessibilityRole="header">{subGroup.title}</Text>
-        <View className="flex-row items-center">
-          <View
-            className="px-2.5 py-0.5 rounded-full bg-accent-soft"
-            accessible
-            accessibilityLabel={`пролезло ${climbedCount} из ${results.length}`}
-          >
-            <Text className="text-caption font-medium text-accent-soft-fg" style={TABULAR_NUMS}>
-              {climbedCount} / {results.length} пролезло
-            </Text>
-          </View>
-          <RefreshTableBtn refetch={refetch} />
-        </View>
-      </View>
-
-      {/* Минимальная высота — чтобы оверлей загрузки/ошибки не сжимался в полоску, пока строк ещё нет. */}
-      <View
-        className={`relative ${isLoading || error ? 'min-h-28' : ''}`}
-        onLayout={(event) => setAvailableWidth(event.nativeEvent.layout.width)}
-      >
-        {/* flex-колонки на 100% ширины; горизонтальный скролл — только запасной вариант,
-            когда минимальные ширины колонок не помещаются (см. needsScroll). */}
-        <ScrollView
-          horizontal
-          scrollEnabled={needsScroll}
-          showsHorizontalScrollIndicator={needsScroll}
-          persistentScrollbar={needsScroll}
-          contentContainerStyle={{ width: needsScroll ? minTableWidth : availableWidth || undefined }}
-        >
-        <View className="w-full">
+  const tableRows = (
+    <>
           {/* Строки озвучиваются целиком с названиями колонок, поэтому шапку скринридер пропускает */}
           <View className="flex-row border-b border-line" importantForAccessibility="no-hide-descendants" accessibilityElementsHidden>
             {config.map((col, colIndex) => (
@@ -180,6 +162,9 @@ export default function Table({
                 <Text
                   className={`text-caption font-medium text-fg-subtle ${colIndex === config.length - 1 ? 'text-right' : 'text-left'}`}
                   numberOfLines={1}
+                  // При крупном системном шрифте заголовок («команда») сжимается, а не обрезается многоточием
+                  adjustsFontSizeToFit
+                  minimumFontScale={0.7}
                 >
                   {isNarrow && col.short ? col.short : col.name}
                 </Text>
@@ -227,7 +212,7 @@ export default function Table({
                       ) : (
                         <Text
                           style={TABULAR_NUMS}
-                          className={`text-caption font-medium ${SECONDARY_PROPS.includes(col.prop as string) ? 'text-fg-subtle' : 'text-fg'}${colIndex === config.length - 1 ? ' text-right' : ''}`}
+                          className={`text-caption font-medium ${SECONDARY_PROPS.includes(col.prop as string) ? (rowClass ? 'text-fg-muted' : 'text-fg-subtle') : 'text-fg'}${colIndex === config.length - 1 ? ' text-right' : ''}`}
                           numberOfLines={WRAPPED_PROPS.includes(col.prop as string) ? 0 : 1}>
                           {value}
                         </Text>
@@ -244,8 +229,44 @@ export default function Table({
               <Text className="text-caption text-center text-fg-subtle">-</Text>
             </View>
           )}
+    </>
+  )
+
+  return (
+    <View className="mt-2">
+      <View className="flex-row items-center justify-between mb-2">
+        <Text className="text-body font-semibold text-fg" accessibilityRole="header">{subGroup.title}</Text>
+        <View className="flex-row items-center">
+          <View
+            className="px-2.5 py-0.5 rounded-full bg-accent-soft"
+            accessible
+            accessibilityLabel={`пролезло ${climbedCount} из ${results.length}`}
+          >
+            <Text className="text-caption font-medium text-accent-soft-fg" style={TABULAR_NUMS}>
+              {climbedCount} / {results.length} пролезло
+            </Text>
+          </View>
+          <RefreshTableBtn refetch={refetch} />
         </View>
-        </ScrollView>
+      </View>
+
+      {/* Минимальная высота — чтобы оверлей загрузки/ошибки не сжимался в полоску, пока строк ещё нет. */}
+      <View
+        className={`relative ${isLoading || error ? 'min-h-28' : ''}`}
+        onLayout={(event) => setAvailableWidth(event.nativeEvent.layout.width)}
+      >
+        {/* flex-колонки на 100% ширины; горизонтальный скролл — только запасной вариант,
+            когда минимальные ширины колонок не помещаются (см. needsScroll). */}
+        {needsScroll ? (
+          // Запасной вариант: минимальные ширины колонок не помещаются (узкий экран + крупный шрифт)
+          <ScrollView horizontal persistentScrollbar>
+            <View style={{ width: minTableWidth }}>{tableRows}</View>
+          </ScrollView>
+        ) : (
+          // Обычный View, а не ScrollView со scrollEnabled=false: внутри горизонтального скролла
+          // Android раскладывает строки по ширине содержимого, и колонки в строках расходятся
+          <View className="w-full">{tableRows}</View>
+        )}
 
         {isLoading && (
           <View

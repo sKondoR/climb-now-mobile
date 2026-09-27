@@ -41,14 +41,6 @@ export default observer(function ResultsForm() {
 
     // Группы грузятся мимо React Query, поэтому сами не перезапросятся, когда вернётся сеть
     return onlineManager.subscribe((online) => {
-      console.log(
-        "[debug] onlineManager:",
-        online,
-        "groupsData null:",
-        disciplinesStore.groupsData === null,
-        "loading:",
-        disciplinesStore.isGroupsLoading,
-      );
       if (
         online &&
         disciplinesStore.groupsData === null &&

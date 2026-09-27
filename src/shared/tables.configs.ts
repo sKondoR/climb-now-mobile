@@ -20,7 +20,7 @@ export const leadQualResultsConfig = [
     { name: 'балл', prop: 'mark1' },
     { name: 'тр.2', prop: 'score2' },
     { name: 'балл', prop: 'mark2' },
-    { name: 'баллы', prop: 'mark' },
+    { name: 'итог', prop: 'mark' },
 ].map((item, i) => ({ ...item, id: `lqr-${i}` }));
 
 export const leadFinalConfig = [
