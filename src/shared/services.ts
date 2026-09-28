@@ -1,5 +1,5 @@
 import { Discipline, SubGroupData } from '@/shared/types'
-import { BACKEND_API_URL, WEB_API_URL } from './constants'
+import { BACKEND_API_URL, FETCH_TIMEOUT, WEB_API_URL } from './constants'
 import { getDateRange } from './utils/date.utils'
 import type {
   EventResponse,
@@ -9,11 +9,25 @@ import type {
 } from './types/api.types'
 
 /**
+ * fetch с таймаутом: если соединение повисло (например, домен режется DPI),
+ * запрос падает с ошибкой вместо вечной загрузки.
+ */
+const fetchWithTimeout = async (url: string, init?: RequestInit): Promise<Response> => {
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT)
+  try {
+    return await fetch(url, { ...init, signal: controller.signal })
+  } finally {
+    clearTimeout(timeoutId)
+  }
+}
+
+/**
  * Получает список команд
  */
 export const fetchTeams = async (): Promise<string[]> => {
   try {
-    const response = await fetch(`${BACKEND_API_URL}teams`)
+    const response = await fetchWithTimeout(`${BACKEND_API_URL}teams`)
 
     if (!response.ok) {
       throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`)
@@ -40,7 +54,7 @@ export const fetchEvents = async (): Promise<EventResponse[]> => {
     }
 
     const queryString = new URLSearchParams(params as Record<string, string>).toString()
-    const response = await fetch(`${BACKEND_API_URL}events?${queryString}`)
+    const response = await fetchWithTimeout(`${BACKEND_API_URL}events?${queryString}`)
 
     if (!response.ok) {
       throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`)
@@ -61,7 +75,7 @@ export const fetchEvents = async (): Promise<EventResponse[]> => {
  */
 export const patchEvent = async (eventId: number, newCode: string): Promise<EventResponse> => {
   try {
-    const response = await fetch(`${BACKEND_API_URL}events/${eventId}`, {
+    const response = await fetchWithTimeout(`${BACKEND_API_URL}events/${eventId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -86,7 +100,7 @@ export const patchEvent = async (eventId: number, newCode: string): Promise<Even
  */
 export const healthCheck = async (): Promise<BaseResponse> => {
   try {
-    const response = await fetch(`${BACKEND_API_URL}health`)
+    const response = await fetchWithTimeout(`${BACKEND_API_URL}health`)
 
     if (!response.ok) {
       throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`)
@@ -109,7 +123,7 @@ export const fetchResults = async (code: string): Promise<Discipline[] | null> =
   let lastError: Error | null = null
 
   try {
-    const response = await fetch(`${WEB_API_URL}groups?code=${code}`)
+    const response = await fetchWithTimeout(`${WEB_API_URL}groups?code=${code}`)
 
     if (!response.ok) {
       throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`)
@@ -136,7 +150,7 @@ export const fetchResults = async (code: string): Promise<Discipline[] | null> =
  * Получает таблицу результатов конкретной подгруппы с продакшена climb-now.
  */
 export const fetchResultsTable = async (code: string, subgroupLink: string): Promise<SubGroupData> => {
-  const response = await fetch(`${WEB_API_URL}results?code=${code}&subgroup=${subgroupLink}`)
+  const response = await fetchWithTimeout(`${WEB_API_URL}results?code=${code}&subgroup=${subgroupLink}`)
   if (!response.ok) {
     throw new Error(`Failed to fetch results: ${response.statusText}`)
   }
