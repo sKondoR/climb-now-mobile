@@ -1,6 +1,12 @@
 export const DEFAULT_URL_CODE = '2602vrn'
 export const MIN_URL_CODE_LENGTH = 7
 export const DEFAULT_TEAM = 'СПБ'
+// Запасной список команд, если бэкенд недоступен
+export const DEFAULT_TEAMS = [
+  'БАШК', 'ВОЛГ', 'ВОЛО', 'ВРНЖ', 'ДНР', 'КИРВ', 'КЛНД', 'КРДР', 'КРСК', 'КУРС',
+  'ЛЕНГ', 'ЛНР', 'МОСК', 'МСК', 'НИЖГ', 'ПЕНЗ', 'ПЕРМ', 'ПРИМ', 'РКАР', 'РОСТ',
+  'РЯЗН', 'САРТ', 'СВРД', 'СВСТ', 'СПБ', 'ТАТ', 'ТУЛС', 'УДМ', 'ХБРК', 'ЧЛБН',
+]
 export const UPDATE_INTERVAL = 120000
 export const DEBOUNCE_DELAY = 500
 export const FETCH_TIMEOUT = 15000

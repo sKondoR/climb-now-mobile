@@ -1,5 +1,5 @@
 import { Discipline, SubGroupData } from '@/shared/types'
-import { BACKEND_API_URL, FETCH_TIMEOUT, WEB_API_URL } from './constants'
+import { BACKEND_API_URL, DEFAULT_TEAMS, FETCH_TIMEOUT, WEB_API_URL } from './constants'
 import { getDateRange } from './utils/date.utils'
 import type {
   EventResponse,
@@ -36,8 +36,9 @@ export const fetchTeams = async (): Promise<string[]> => {
     const data = await response.json()
     return data.teams
   } catch (error) {
-    console.error('Error fetching teams:', error)
-    throw error
+    // Не бросаем ошибку, чтобы react-query не повторял запрос: берём запасной список
+    console.warn('fetchTeams failed, using DEFAULT_TEAMS:', error)
+    return DEFAULT_TEAMS
   }
 }
 
