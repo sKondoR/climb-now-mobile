@@ -4,8 +4,8 @@ import { useCallback, useEffect } from "react";
 import { View } from "react-native";
 
 import { DEFAULT_TEAM, DEFAULT_URL_CODE } from "@/shared/constants";
-import { rootStore } from "@/store/root.store";
 import { useIconColors } from "@/shared/theme";
+import { rootStore } from "@/store/root.store";
 
 import Autocomplete from "@/shared/components/Autocomplete/Autocomplete";
 import { Item } from "@/shared/components/Autocomplete/Autocomplete.types";
@@ -87,7 +87,7 @@ export default observer(function ResultsForm() {
         onChange={handleUrlChange}
         placeholder="2602vrn"
         data={eventsStore.events as unknown as Item[]}
-        label="код соревнований"
+        label="код соревнования"
         dataLabel={DEFAULT_URL_CODE}
         property="link"
         isLoading={eventsStore.isEventsLoading}

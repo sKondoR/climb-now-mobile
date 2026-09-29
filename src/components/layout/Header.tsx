@@ -1,47 +1,56 @@
-import { useState } from 'react'
-import { LayoutAnimation, Text, View } from 'react-native'
-import { observer } from 'mobx-react-lite'
+import { observer } from "mobx-react-lite";
+import { useState } from "react";
+import { LayoutAnimation, Text, View } from "react-native";
 
-import { rootStore } from '@/store/root.store'
-import ResultsForm from '@/components/forms/ResultsForm'
-import { useIconColors } from '@/shared/theme'
-import { useReduceMotion } from '@/shared/hooks/useReduceMotion'
-import IconButton from '@/shared/components/IconButton/IconButton'
+import ResultsForm from "@/components/forms/ResultsForm";
+import IconButton from "@/shared/components/IconButton/IconButton";
+import { useReduceMotion } from "@/shared/hooks/useReduceMotion";
+import { useIconColors } from "@/shared/theme";
+import { rootStore } from "@/store/root.store";
 
 const HeaderFormValues = observer(function HeaderFormValues() {
-  const { code, command, isCommandFilterEnabled, isOnlyOnline } = rootStore.formStore
+  const { code, command, isCommandFilterEnabled, isOnlyOnline } =
+    rootStore.formStore;
   return (
     <View className="flex-row gap-x-4">
       <View className="flex-1 gap-y-1">
         <Text className="text-caption text-fg-subtle">
-          код соревнований: <Text className="font-bold text-fg">{code || '-'}</Text>
+          код соревнования:{" "}
+          <Text className="font-bold text-fg">{code || "-"}</Text>
         </Text>
         <Text className="text-caption text-fg-subtle">
-          команда: <Text className="font-bold text-fg">{command || '-'}</Text>
+          команда: <Text className="font-bold text-fg">{command || "-"}</Text>
         </Text>
       </View>
       <View className="flex-1 gap-y-1">
         <Text className="text-caption text-fg-subtle">
-          только команда: <Text className="font-bold text-fg">{isCommandFilterEnabled ? 'да' : 'нет'}</Text>
+          только команда:{" "}
+          <Text className="font-bold text-fg">
+            {isCommandFilterEnabled ? "да" : "нет"}
+          </Text>
         </Text>
         <Text className="text-caption text-fg-subtle">
-          только онлайн: <Text className="font-bold text-fg">{isOnlyOnline ? 'да' : 'нет'}</Text>
+          только онлайн:{" "}
+          <Text className="font-bold text-fg">
+            {isOnlyOnline ? "да" : "нет"}
+          </Text>
         </Text>
       </View>
     </View>
-  )
-})
+  );
+});
 
 export default function Header() {
-  const [isExpanded, setIsExpanded] = useState(true)
-  const iconColors = useIconColors()
-  const reduceMotion = useReduceMotion()
+  const [isExpanded, setIsExpanded] = useState(true);
+  const iconColors = useIconColors();
+  const reduceMotion = useReduceMotion();
 
   const toggleExpanded = () => {
     // При «уменьшить движение» шапка сворачивается мгновенно
-    if (!reduceMotion) LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-    setIsExpanded((prev) => !prev)
-  }
+    if (!reduceMotion)
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setIsExpanded((prev) => !prev);
+  };
 
   return (
     <View className="bg-surface border-b border-line-subtle relative">
@@ -50,12 +59,12 @@ export default function Header() {
           <HeaderFormValues />
         </View>
       )}
-      <View className={`px-4 pb-4 pt-3 ${isExpanded ? '' : 'hidden'}`}>
+      <View className={`px-4 pb-4 pt-3 ${isExpanded ? "" : "hidden"}`}>
         <ResultsForm />
       </View>
       <IconButton
-        icon={isExpanded ? 'chevron-up' : 'chevron-down'}
-        label={isExpanded ? 'Свернуть форму поиска' : 'Развернуть форму поиска'}
+        icon={isExpanded ? "chevron-up" : "chevron-down"}
+        label={isExpanded ? "Свернуть форму поиска" : "Развернуть форму поиска"}
         expanded={isExpanded}
         outlined
         size={12}
@@ -64,5 +73,5 @@ export default function Header() {
         className="absolute bottom-1 right-1"
       />
     </View>
-  )
+  );
 }

@@ -504,7 +504,7 @@
       "kind": "input",
       "refersTo": "text-field",
       "description": "Поле с подписью и примером; справа иконка выпадающего списка.",
-      "html": "<label class=\"ds-field\"><span class=\"ds-field__label\">код соревнований <span class=\"ds-field__hint\">(например: 2602vrn)</span></span><span class=\"ds-field__box\"><input class=\"ds-field__input\" placeholder=\"2602vrn\"><svg class=\"ds-field__icon\" viewBox=\"0 0 320 512\" width=\"10\" height=\"16\"><path fill=\"#64748b\" d=\"M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9S301 192 288 192H32c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z\"/></svg></span></label>",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field__label\">код соревнования <span class=\"ds-field__hint\">(например: 2602vrn)</span></span><span class=\"ds-field__box\"><input class=\"ds-field__input\" placeholder=\"2602vrn\"><svg class=\"ds-field__icon\" viewBox=\"0 0 320 512\" width=\"10\" height=\"16\"><path fill=\"#64748b\" d=\"M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9S301 192 288 192H32c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z\"/></svg></span></label>",
       "css": ".ds-field { font-family: system-ui, -apple-system, Roboto, sans-serif; display: block; } .ds-field__label { display: block; font-size: 14px; font-weight: 500; color: #475569; margin-bottom: 8px; } .ds-field__hint { font-weight: 400; color: #64748b; } .ds-field__box { position: relative; display: flex; align-items: center; } .ds-field__input { flex: 1; font-size: 16px; padding: 8px 36px 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; background: #fff; color: #0f172a; } .ds-field__input::placeholder { color: #64748b; } .ds-field__input:focus-visible { outline: none; border-color: #2563eb; } .ds-field__icon { position: absolute; right: 16px; }"
     },
     {
@@ -581,7 +581,7 @@
       },
       {
         "name": "The Lowercase Voice Rule",
-        "body": "Подписи и статусы пишутся со строчной буквы: «код соревнований», «только онлайн», «нет онлайн групп». С заглавной — только названия и ошибки.",
+        "body": "Подписи и статусы пишутся со строчной буквы: «код соревнования», «только онлайн», «нет онлайн групп». С заглавной — только названия и ошибки.",
         "section": "typography"
       },
       {
