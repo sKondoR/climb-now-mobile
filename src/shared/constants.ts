@@ -21,6 +21,8 @@ export const EXTERNAL_EVENT_BASE_URL = 'http://c-f-r.ru/live/'
 export const DISCIPLINES = {
   LEAD: 'трудность' as const,
   SPEED: 'скорость' as const,
+  // «ЛАЗАНИЕ НА СКОРОСТЬ (К)» — классическая скорость, свои протоколы s_*
+  SPEED_CLASSIC: 'скорость (кл)' as const,
   BOULRER: 'боулдеринг' as const,
 } as const
 
@@ -30,4 +32,4 @@ export const STATUSES = {
   PASSED: 'passed' as const,
 } as const
 
-export const SPECIAL_STATUSES = ['н/я', 'в/к']
+export const SPECIAL_STATUSES = ['н/я', 'в/к', 'ф/с']

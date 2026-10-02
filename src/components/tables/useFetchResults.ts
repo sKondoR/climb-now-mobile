@@ -42,6 +42,7 @@ export default function useFetchResults({ code, subgroupLink, isOnline }: UseRes
     isQualResult: query.data?.isQualResult ?? false,
     isFinal: query.data?.isFinal ?? false,
     isBoulder: query.data?.isBoulder ?? false,
+    isSpeed: query.data?.isSpeed ?? false,
     isLoading: query.isLoading,
     error: query.error ? (query.error instanceof Error ? query.error.message : 'Unknown error') : null,
     refetch: query.refetch,

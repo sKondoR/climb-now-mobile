@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { ActivityIndicator, ScrollView, Text, useWindowDimensions, View, ViewStyle } from 'react-native'
 
-import { getClimbedCount, getFinalBorderClasses, getRowClasses, getTableConfig, isCommandMatch } from './tables.utils'
+import { filterOwnHeats, getClimbedCount, getFinalBorderClasses, getRowClasses, getTableConfig, isCommandMatch } from './tables.utils'
 import BoulderCell from './BoulderCell'
+import SpeedBracket from './SpeedBracket'
 import RefreshTableBtn from './RefreshTableBtn'
 import useFetchResults from './useFetchResults'
 
@@ -16,6 +17,8 @@ import {
   LeadFinalsItem,
   BoulderQualItem,
   BoulderFinalItem,
+  SpeedQualItem,
+  SpeedFinalItem,
 } from '@/shared/types'
 
 interface TableProps {
@@ -41,12 +44,13 @@ const TABULAR_NUMS = { fontVariant: ['tabular-nums' as const] }
 // Второстепенные колонки — приглушённым цветом, чтобы взгляд шёл к месту, имени и результату.
 // На подсвеченных строках (свои, лидеры) — на ступень темнее (fg-muted): fg-subtle на цветном фоне
 // в тёмной теме опускается ниже 4.5:1
-const SECONDARY_PROPS = ['stRank', 'command', 'qRank']
+const SECONDARY_PROPS = ['stRank', 'stRank2', 'command', 'qRank']
 
 // Для скринридера: «ст.#» и «тр.1» читаются плохо, поэтому озвучиваются полные названия.
 const SPOKEN_COL_NAMES: Record<string, string> = {
   rank: 'место',
   stRank: 'стартовый номер',
+  stRank2: 'второй стартовый номер',
   qRank: 'место в квалификации',
   score: 'результат',
 }
@@ -71,12 +75,13 @@ const getSpokenValue = (value?: string) => {
 // чтобы при крупном шрифте цифры и имена не обрезались.
 // Фиксированные колонки — по содержимому: место, ст.#, место в квалификации (до 3 цифр;
 // кв.свод от 640px — 56, чтобы влез полный заголовок), команда (коды вроде «КРСК»),
-// результат и баллы («TOP», «45+», «124,5»). Свободное место забирает имя, а не они.
-const getFixedWidth = (prop: string | undefined, isNarrow: boolean) => {
-  if (prop === 'rank' || prop === 'stRank') return isNarrow ? 28 : 44
+// результат и баллы («TOP», «45+», «124,5»), время трасс скорости («08,282», «срыв»). Свободное место забирает имя, а не они.
+const getFixedWidth = (prop: string | undefined, isNarrow: boolean, isSpeed: boolean) => {
+  if (prop === 'rank' || prop === 'stRank' || prop === 'stRank2') return isNarrow ? 28 : 44
   if (prop === 'qRank') return isNarrow ? 28 : 56
   if (prop === 'command') return 44
   if (prop === 'score' || prop === 'mark') return 48
+  if (isSpeed && (prop === 'score1' || prop === 'score2')) return 48
   return null
 }
 // Гибкие колонки: flex — доля свободной ширины, min — ниже этого колонка не сжимается.
@@ -89,16 +94,16 @@ const getFlexCol = (prop?: string) => {
   if (prop && /^r\d$/.test(prop)) return { flex: 1, min: 18 }
   return { flex: 1, min: 28 }
 }
-const getColStyle = (prop: string | undefined, isNarrow: boolean, fontScale: number): ViewStyle => {
-  const fixed = getFixedWidth(prop, isNarrow)
+const getColStyle = (prop: string | undefined, isNarrow: boolean, isSpeed: boolean, fontScale: number): ViewStyle => {
+  const fixed = getFixedWidth(prop, isNarrow, isSpeed)
   if (fixed !== null) return { width: fixed * fontScale }
   const { flex, min } = getFlexCol(prop)
   // flexBasis: 0 обязательно — иначе база считается от ширины содержимого, и в каждой строке
   // колонки получают разную ширину (длинное имя сдвигает команду вправо)
   return { flexGrow: flex, flexShrink: 1, flexBasis: 0, minWidth: min * fontScale }
 }
-const getColMinWidth = (prop: string | undefined, isNarrow: boolean, fontScale: number) =>
-  (getFixedWidth(prop, isNarrow) ?? getFlexCol(prop).min) * fontScale
+const getColMinWidth = (prop: string | undefined, isNarrow: boolean, isSpeed: boolean, fontScale: number) =>
+  (getFixedWidth(prop, isNarrow, isSpeed) ?? getFlexCol(prop).min) * fontScale
 
 export default function Table({
   subGroup,
@@ -108,7 +113,7 @@ export default function Table({
   isNamesFilterEnabled,
   names,
 }: TableProps) {
-  const { results, isLead, isBoulder, isFinal, isQualResult, isLoading, error, refetch } = useFetchResults({
+  const { results, isLead, isBoulder, isSpeed, isFinal, isQualResult, isLoading, error, refetch } = useFetchResults({
     code,
     isOnline: subGroup?.status === STATUSES.ONLINE,
     subgroupLink: subGroup?.link,
@@ -123,9 +128,14 @@ export default function Table({
 
   if (!subGroup) return null
 
+  const isSpeedFinal = isSpeed && isFinal
+
   const filterResultsByCommand = (results: Results) => {
     if (!isCommandFilterEnabled) {
       return results
+    }
+    if (isSpeedFinal) {
+      return filterOwnHeats(results as SpeedFinalItem[], command)
     }
     const filtered = results.filter((result) => isCommandMatch(result.command, command))
     return filtered.length
@@ -134,9 +144,9 @@ export default function Table({
   }
 
   const filteredResults: Results = filterResultsByCommand(results as Results)
-  const climbedCount = getClimbedCount({ results, isLead, isBoulder })
+  const climbedCount = getClimbedCount({ results, isLead, isBoulder, isSpeed })
 
-  const config = getTableConfig({ isFinal, isQualResult, isLead, isBoulder }).filter((col) => {
+  const config = getTableConfig({ isFinal, isQualResult, isLead, isBoulder, isSpeed }).filter((col) => {
     if (!col.prop) return false
     const firstResult = results?.[0]
     if (!firstResult) return false
@@ -144,10 +154,11 @@ export default function Table({
   })
 
   const finalBorderClasses = getFinalBorderClasses(filteredResults)
-  const minTableWidth = config.reduce((sum, col) => sum + getColMinWidth(col.prop, isNarrow, fontScale), 0) + 10
+  const minTableWidth = config.reduce((sum, col) => sum + getColMinWidth(col.prop, isNarrow, isSpeed, fontScale), 0) + 10
   // Горизонтальный скролл — только при увеличенном системном шрифте: при обычном таблица всегда
-  // на всю ширину (минимумы колонок — осторожная оценка и при обычном шрифте включали бы скролл зря)
-  const needsScroll = fontScale > 1 && availableWidth > 0 && minTableWidth > availableWidth
+  // на всю ширину (минимумы колонок — осторожная оценка и при обычном шрифте включали бы скролл зря).
+  // Исключение — квалификация скорости: время обеих трасс показываем целиком, на узком экране оно не помещается
+  const needsScroll = (fontScale > 1 || isSpeed) && availableWidth > 0 && minTableWidth > availableWidth
 
   const tableRows = (
     <>
@@ -157,7 +168,7 @@ export default function Table({
               <View
                 key={col.id}
                 className={getCellPadding(colIndex, config.length)}
-                style={getColStyle(col.prop, isNarrow, fontScale)}
+                style={getColStyle(col.prop, isNarrow, isSpeed, fontScale)}
               >
                 <Text
                   className={`text-caption font-medium text-fg-subtle ${colIndex === config.length - 1 ? 'text-right' : 'text-left'}`}
@@ -176,7 +187,7 @@ export default function Table({
             const finalBorderClass = finalBorderClasses[index]
             const rowClass = getRowClasses({ result, command, names, isNamesFilterEnabled, isFinal })
             const getValue = (prop?: string) =>
-              (result as LeadQualItem | LeadQualResultItem | LeadFinalsItem | BoulderQualItem | BoulderFinalItem)[
+              (result as LeadQualItem | LeadQualResultItem | LeadFinalsItem | BoulderQualItem | BoulderFinalItem | SpeedQualItem)[
                 prop as Exclude<keyof typeof result, 'isHighlighted'>
               ]
             const rowState = rowClass.includes('bg-highlight')
@@ -198,14 +209,14 @@ export default function Table({
               >
                 {config.map((col, colIndex) => {
                   const value = (
-                    result as LeadQualItem | LeadQualResultItem | LeadFinalsItem | BoulderQualItem | BoulderFinalItem
+                    result as LeadQualItem | LeadQualResultItem | LeadFinalsItem | BoulderQualItem | BoulderFinalItem | SpeedQualItem
                   )[col.prop as Exclude<keyof typeof result, 'isHighlighted'>]
                   const isBoulderCell = value.includes('/') && !SPECIAL_STATUSES.includes(value.toLowerCase())
                   return (
                     <View
                       key={`${col.id}-${colIndex}`}
                       className={getCellPadding(colIndex, config.length)}
-                      style={getColStyle(col.prop, isNarrow, fontScale)}
+                      style={getColStyle(col.prop, isNarrow, isSpeed, fontScale)}
                     >
                       {isBoulderCell ? (
                         <BoulderCell value={value} />
@@ -237,15 +248,17 @@ export default function Table({
       <View className="flex-row items-center justify-between mb-2">
         <Text className="text-body font-semibold text-fg" accessibilityRole="header">{subGroup.title}</Text>
         <View className="flex-row items-center">
-          <View
-            className="px-2.5 py-0.5 rounded-full bg-accent-soft"
-            accessible
-            accessibilityLabel={`пролезло ${climbedCount} из ${results.length}`}
-          >
-            <Text className="text-caption font-medium text-accent-soft-fg" style={TABULAR_NUMS}>
-              {climbedCount} / {results.length} пролезло
-            </Text>
-          </View>
+          {!isSpeedFinal && (
+            <View
+              className="px-2.5 py-0.5 rounded-full bg-accent-soft"
+              accessible
+              accessibilityLabel={`пролезло ${climbedCount} из ${results.length}`}
+            >
+              <Text className="text-caption font-medium text-accent-soft-fg" style={TABULAR_NUMS}>
+                {climbedCount} / {results.length} пролезло
+              </Text>
+            </View>
+          )}
           <RefreshTableBtn refetch={refetch} />
         </View>
       </View>
@@ -257,7 +270,21 @@ export default function Table({
       >
         {/* flex-колонки на 100% ширины; горизонтальный скролл — только запасной вариант,
             когда минимальные ширины колонок не помещаются (см. needsScroll). */}
-        {needsScroll ? (
+        {isSpeedFinal ? (
+          <>
+            <SpeedBracket
+              results={filteredResults as SpeedFinalItem[]}
+              command={command}
+              names={names}
+              isNamesFilterEnabled={isNamesFilterEnabled}
+            />
+            {filteredResults.length === 0 && !isLoading && !error && (
+              <View className="py-1 border-b border-line-subtle">
+                <Text className="text-caption text-center text-fg-subtle">-</Text>
+              </View>
+            )}
+          </>
+        ) : needsScroll ? (
           // Запасной вариант: минимальные ширины колонок не помещаются (узкий экран + крупный шрифт)
           <ScrollView horizontal persistentScrollbar>
             <View style={{ width: minTableWidth }}>{tableRows}</View>

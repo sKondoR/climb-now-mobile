@@ -63,3 +63,16 @@ export const boulderFinalConfig = [
     { name: '4', prop: 'r4' },
     { name: 'результат', short: 'итог', prop: 'score' },
 ].map((item, i) => ({ ...item, id: `bf-${i}` }));
+
+// Классическая скорость (К) приходит с теми же полями, но без stRank2 — колонка отфильтруется по первой строке
+export const speedQualConfig = [
+    { name: 'место', short: 'м', prop: 'rank' },
+    {},
+    { name: 'ст.#', short: 'ст', prop: 'stRank' },
+    { name: NAME_COL, prop: 'name' },
+    { name: COMMAND_COL, prop: 'command' },
+    { name: 'тр.1', prop: 'score1' },
+    { name: 'ст.#2', short: 'ст2', prop: 'stRank2' },
+    { name: 'тр.2', prop: 'score2' },
+    { name: 'результат', short: 'итог', prop: 'score' },
+].map((item, i) => ({ ...item, id: `sq-${i}` }));

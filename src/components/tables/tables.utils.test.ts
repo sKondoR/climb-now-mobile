@@ -6,7 +6,9 @@ import {
   getRowClasses,
   getFinalPlaces,
   getClimbedCount,
+  filterOwnHeats,
 } from './tables.utils'
+import { speedQualConfig } from '@/shared/tables.configs'
 import { LeadQualItem } from '@/shared/types'
 
 // Mock data for testing
@@ -80,9 +82,28 @@ describe('tables.utils', () => {
       expect(config).toBeDefined()
     })
 
+    it('should return speedQualConfig for speed qualification', () => {
+      const config = getTableConfig({ isLead: false, isBoulder: false, isSpeed: true, isQualResult: false, isFinal: false })
+      expect(config).toBe(speedQualConfig)
+    })
+
     it('should return leadQualConfig when neither isLead nor isBoulder is true', () => {
       const config = getTableConfig({ isLead: false, isBoulder: false, isQualResult: false, isFinal: false })
       expect(config).toBeDefined()
+    })
+  })
+
+  describe('filterOwnHeats', () => {
+    const item = (name: string, command: string, heat: number) =>
+      ({ rank: '', name, command, score: '05,000', round: '1/8 финала', heat })
+    const results = [item('А', 'СПБ', 0), item('Б', 'МСК', 0), item('В', 'МСК', 1), item('Г', 'ТЮМН', 1)]
+
+    it('keeps whole heats with own climbers, opponents included', () => {
+      expect(filterOwnHeats(results, 'спб')).toStrictEqual([results[0], results[1]])
+    })
+
+    it('returns nothing when there are no own climbers', () => {
+      expect(filterOwnHeats(results, 'КРСК')).toStrictEqual([])
     })
   })
 

@@ -84,7 +84,10 @@ export default observer(function GroupCard({ group }: GroupCardProps) {
                   }`}
                 >
                   <StatusIcon status={tab.status} />
-                  <Text className={`text-body-sm font-medium ${isActive ? 'text-fg' : 'text-fg-muted'}`}>{tab.label}</Text>
+                  <Text className={`text-body-sm font-medium ${isActive ? 'text-fg' : 'text-fg-muted'}`}>
+                    {/* Сокращение только визуальное: скринридеру остаётся полное название из accessibilityLabel */}
+                    {tab.label.replace(/(к)валификация/gi, '$1вал.')}
+                  </Text>
                 </Pressable>
               )
             })}
