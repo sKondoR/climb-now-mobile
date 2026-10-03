@@ -1,61 +1,77 @@
-import { useEffect, useState } from 'react'
-import { Pressable, ScrollView, Text, View } from 'react-native'
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6'
-import { observer } from 'mobx-react-lite'
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import { observer } from "mobx-react-lite";
+import { useEffect, useState } from "react";
+import { Pressable, ScrollView, Text, View } from "react-native";
 
-import { Group } from '@/shared/types'
-import { STATUSES } from '@/shared/constants'
-import { rootStore } from '@/store/root.store'
-import { useIconColors } from '@/shared/theme'
-import StatusIcon from './StatusIcon'
-import Table from '../tables/Table'
+import { STATUSES } from "@/shared/constants";
+import { useIconColors } from "@/shared/theme";
+import { Group } from "@/shared/types";
+import { rootStore } from "@/store/root.store";
+import Table from "../tables/Table";
+import StatusIcon from "./StatusIcon";
 
 const STATUS_LABELS: Record<string, string> = {
-  [STATUSES.ONLINE]: ', идёт сейчас',
-  [STATUSES.PASSED]: ', завершена',
-}
+  [STATUSES.ONLINE]: ", идёт сейчас",
+  [STATUSES.PASSED]: ", завершена",
+};
 
 interface GroupCardProps {
-  group: Group
+  group: Group;
 }
 
 export default observer(function GroupCard({ group }: GroupCardProps) {
-  const [isExpanded, setIsExpanded] = useState(true)
-  const iconColors = useIconColors()
-  const { isCommandFilterEnabled, code, command, isNamesFilterEnabled, names } = rootStore.formStore
+  const [isExpanded, setIsExpanded] = useState(true);
+  const iconColors = useIconColors();
+  const { isCommandFilterEnabled, code, command, isNamesFilterEnabled, names } =
+    rootStore.formStore;
 
   const [activeTab, setActiveTab] = useState<string>(() => {
-    if (group.subgroups.length === 0) return '0'
-    const onlineSubgroup = group.subgroups.find((s) => s.status === STATUSES.ONLINE)
-    return onlineSubgroup ? onlineSubgroup.id : group.subgroups[group.subgroups.length - 1].id
-  })
+    if (group.subgroups.length === 0) return "0";
+    const onlineSubgroup = group.subgroups.find(
+      (s) => s.status === STATUSES.ONLINE,
+    );
+    return onlineSubgroup
+      ? onlineSubgroup.id
+      : group.subgroups[group.subgroups.length - 1].id;
+  });
 
   useEffect(() => {
-    if (group.subgroups.length > 0 && !group.subgroups.find((s) => s.id === activeTab)) {
-      setActiveTab(group.subgroups[0].id)
+    if (
+      group.subgroups.length > 0 &&
+      !group.subgroups.find((s) => s.id === activeTab)
+    ) {
+      setActiveTab(group.subgroups[0].id);
     }
-  }, [group.subgroups, activeTab])
+  }, [group.subgroups, activeTab]);
 
-  let isOnline: typeof STATUSES.ONLINE | null = null
+  let isOnline: typeof STATUSES.ONLINE | null = null;
   const tabs = group.subgroups.map((subgroup) => {
-    if (subgroup.status === STATUSES.ONLINE) isOnline = STATUSES.ONLINE
-    return { id: subgroup.id, label: subgroup.title, status: subgroup.status }
-  })
+    if (subgroup.status === STATUSES.ONLINE) isOnline = STATUSES.ONLINE;
+    return { id: subgroup.id, label: subgroup.title, status: subgroup.status };
+  });
 
   return (
-    <View className={`bg-surface shadow-sm border p-4 ${isOnline ? 'border-live-line' : 'border-line-subtle'}`}>
+    <View
+      className={`bg-surface shadow-sm border p-4 ${isOnline ? "border-live-line" : "border-line-subtle"}`}
+    >
       <Pressable
         className="flex-row items-center min-h-12 -my-2"
         onPress={() => setIsExpanded(!isExpanded)}
         accessibilityRole="button"
-        accessibilityLabel={`${group.title}${isOnline ? ', идёт сейчас' : ''}`}
+        accessibilityLabel={`${group.title}${isOnline ? ", идёт сейчас" : ""}`}
         accessibilityState={{ expanded: isExpanded }}
       >
-        <Text className="text-title font-bold text-fg mr-2">{group.title}</Text>
         <StatusIcon status={isOnline} onlyOnline />
-        <View className="flex-1" />
+        <Text className="flex-1 text-title font-bold text-fg mr-2">
+          {group.title}
+        </Text>
         <View className="border border-line rounded-full w-8 h-8 items-center justify-center">
-          <FontAwesome6 name={isExpanded ? 'chevron-up' : 'chevron-down'} solid size={12} color={iconColors.muted} />
+          <FontAwesome6
+            name={isExpanded ? "chevron-up" : "chevron-down"}
+            solid
+            size={12}
+            color={iconColors.muted}
+          />
         </View>
       </Pressable>
 
@@ -70,26 +86,28 @@ export default observer(function GroupCard({ group }: GroupCardProps) {
             accessibilityRole="tablist"
           >
             {tabs.map((tab) => {
-              const isActive = activeTab === tab.id
+              const isActive = activeTab === tab.id;
               return (
                 <Pressable
                   key={tab.id}
                   onPress={() => setActiveTab(tab.id)}
                   hitSlop={{ top: 8, bottom: 8 }}
                   accessibilityRole="tab"
-                  accessibilityLabel={`${tab.label}${STATUS_LABELS[tab.status as string] ?? ''}`}
+                  accessibilityLabel={`${tab.label}${STATUS_LABELS[tab.status as string] ?? ""}`}
                   accessibilityState={{ selected: isActive }}
                   className={`flex-row items-center border-2 px-2 py-1 rounded-lg bg-surface-muted ${
-                    isActive ? 'border-accent' : 'border-transparent'
+                    isActive ? "border-accent" : "border-transparent"
                   }`}
                 >
                   <StatusIcon status={tab.status} />
-                  <Text className={`text-body-sm font-medium ${isActive ? 'text-fg' : 'text-fg-muted'}`}>
+                  <Text
+                    className={`text-body-sm font-medium ${isActive ? "text-fg" : "text-fg-muted"}`}
+                  >
                     {/* Сокращение только визуальное: скринридеру остаётся полное название из accessibilityLabel */}
-                    {tab.label.replace(/(к)валификация/gi, '$1вал.')}
+                    {tab.label.replace(/(к)валификация/gi, "$1вал.")}
                   </Text>
                 </Pressable>
-              )
+              );
             })}
           </ScrollView>
 
@@ -104,5 +122,5 @@ export default observer(function GroupCard({ group }: GroupCardProps) {
         </View>
       )}
     </View>
-  )
-})
+  );
+});
