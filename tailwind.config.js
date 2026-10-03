@@ -25,6 +25,7 @@ module.exports = {
           DEFAULT: token('fg'),
           muted: token('fg-muted'),
           subtle: token('fg-subtle'),
+          placeholder: token('fg-placeholder'),
           disabled: token('fg-disabled'),
         },
         accent: {

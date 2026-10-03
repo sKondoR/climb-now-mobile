@@ -7,6 +7,7 @@ const ICON_COLORS = {
     accent: '#1d4ed8', // accent-fg
     muted: '#475569', // fg-muted
     subtle: '#64748b', // fg-subtle
+    placeholder: '#b0bccb', // fg-placeholder
     live: '#22c55e', // live
     brand: '#0d9488', // teal-600
     surface: '#ffffff', // surface — фон кружка pull-to-refresh на Android
@@ -15,6 +16,7 @@ const ICON_COLORS = {
     accent: '#60a5fa',
     muted: '#cbd5e1',
     subtle: '#94a3b8',
+    placeholder: '#94a3b8',
     live: '#4ade80',
     brand: '#2dd4bf', // teal-400
     surface: '#0f172a',

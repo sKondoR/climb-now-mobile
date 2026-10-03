@@ -153,7 +153,7 @@ export const Autocomplete = <T extends Item = string>({
         accessibilityState={{ expanded: isOpen }}
         className="flex-row items-center min-h-12 pl-3 border border-line rounded-md bg-surface active:opacity-70"
       >
-        <Text className={`flex-1 text-body ${visibleValue ? 'text-fg' : 'text-fg-subtle'}`} numberOfLines={1}>
+        <Text className={`flex-1 text-body ${visibleValue ? 'text-fg' : 'text-fg-placeholder'}`} numberOfLines={1}>
           {visibleValue || placeholder}
         </Text>
         <View className="w-12 items-center">
@@ -203,7 +203,7 @@ export const Autocomplete = <T extends Item = string>({
                 onChangeText={handleChangeText}
                 onSubmitEditing={close}
                 placeholder={placeholder}
-                placeholderTextColor={iconColors.subtle}
+                placeholderTextColor={iconColors.placeholder}
                 accessibilityLabel={label || placeholder}
                 accessibilityHint={dataLabel ? `например: ${dataLabel}` : undefined}
                 autoCapitalize="none"
