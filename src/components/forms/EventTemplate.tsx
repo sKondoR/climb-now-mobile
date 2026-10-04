@@ -1,12 +1,12 @@
 import { Text, View } from 'react-native'
 
-import { isDateBefore } from '@/shared/utils/date.utils'
-import { Event } from '@/shared/types/events'
 import { Item } from '@/shared/components/Autocomplete/Autocomplete.types'
+import { Event } from '@/shared/types/events'
+import { isDateBefore } from '@/shared/utils/date.utils'
 
 export function EventTemplate(item: Event | null, value: Item | null) {
   if (!item?.link) return <Text className="text-body text-fg">{item ? String(item) : ''}</Text>
-  const isHighlighted = isDateBefore(item.enddate)
+  const isHighlighted = isDateBefore(item.startdate)
   const isActive = value === item.link
   return (
     <View className={`px-4 py-2.5 ${isActive ? 'bg-highlight' : isHighlighted ? 'bg-live-faint' : ''}`}>
