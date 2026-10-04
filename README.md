@@ -1,6 +1,6 @@
 # ClimbNow Mobile
 
-<img src="assets/images/icon.png" width="32" height="32" align="absmiddle" alt="ClimbNow"> [ClimbNow в RuStore](https://www.rustore.ru/catalog/app/ru.climbnow.mobile)
+<img src="assets/images/applogo.png" width="32" height="32" align="absmiddle" alt="ClimbNow"> [ClimbNow в RuStore](https://www.rustore.ru/catalog/app/ru.climbnow.mobile)
 
 Мобильное приложение (Expo/React Native) для Android и iOS: живые результаты соревнований Федерации скалолазания России (c-f-r.ru/live). Это порт веб-версии [climb-now](../climb-now). Приложение берёт данные из уже задеплоенного API `https://climbnow.ru/api/*`, собственного парсера и бэкенда у него нет.
 
