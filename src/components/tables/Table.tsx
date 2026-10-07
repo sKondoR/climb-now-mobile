@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { ActivityIndicator, ScrollView, Text, useWindowDimensions, View, ViewStyle } from 'react-native'
 
-import { filterOwnHeats, getClimbedCount, getFinalBorderClasses, getRowClasses, getTableConfig, isCommandMatch } from './tables.utils'
+import { filterOwnHeats, getClimbedCount, getFinalBorderClasses, getRowClasses, getTableConfig, isCommandMatch, isRouteProp, withRouteColumns } from './tables.utils'
 import BoulderCell from './BoulderCell'
 import SpeedBracket from './SpeedBracket'
 import RefreshTableBtn from './RefreshTableBtn'
@@ -56,7 +56,7 @@ const SPOKEN_COL_NAMES: Record<string, string> = {
 }
 const getSpokenColName = (col: { prop?: string; name?: string }) => {
   if (col.prop && SPOKEN_COL_NAMES[col.prop]) return SPOKEN_COL_NAMES[col.prop]
-  if (col.prop && /^r\d$/.test(col.prop)) return `трасса ${col.name}`
+  if (isRouteProp(col.prop)) return `трасса ${col.name}`
   return (col.name ?? '').replace('тр.', 'трасса ')
 }
 
@@ -91,7 +91,7 @@ const getFixedWidth = (prop: string | undefined, isNarrow: boolean, isSpeed: boo
 // Трассы боулдеринга и промежуточные колонки делят ширину с именем, но в меньшей доле.
 const getFlexCol = (prop?: string) => {
   if (prop === 'name') return { flex: 3, min: 80 }
-  if (prop && /^r\d$/.test(prop)) return { flex: 1, min: 18 }
+  if (isRouteProp(prop)) return { flex: 1, min: 18 }
   return { flex: 1, min: 28 }
 }
 const getColStyle = (prop: string | undefined, isNarrow: boolean, isSpeed: boolean, fontScale: number): ViewStyle => {
@@ -146,12 +146,12 @@ export default function Table({
   const filteredResults: Results = filterResultsByCommand(results as Results)
   const climbedCount = getClimbedCount({ results, isLead, isBoulder, isSpeed })
 
-  const config = getTableConfig({ isFinal, isQualResult, isLead, isBoulder, isSpeed }).filter((col) => {
-    if (!col.prop) return false
-    const firstResult = results?.[0]
-    if (!firstResult) return false
-    return col.prop in firstResult
-  })
+  const firstResult = results?.[0]
+  const config = firstResult
+    ? withRouteColumns(getTableConfig({ isFinal, isQualResult, isLead, isBoulder, isSpeed }), firstResult).filter(
+        (col) => col.prop && col.prop in firstResult
+      )
+    : []
 
   const finalBorderClasses = getFinalBorderClasses(filteredResults)
   const minTableWidth = config.reduce((sum, col) => sum + getColMinWidth(col.prop, isNarrow, isSpeed, fontScale), 0) + 10

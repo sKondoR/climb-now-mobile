@@ -3,6 +3,7 @@ import {
   isCommandMatch,
   isNameMatch,
   getTableConfig,
+  withRouteColumns,
   getRowClasses,
   getFinalPlaces,
   getClimbedCount,
@@ -217,5 +218,21 @@ describe('tables.utils', () => {
       const count = getClimbedCount({ results: mockResults, isLead: false, isBoulder: false })
       expect(count).toBe(3)
     })
+  })
+})
+
+describe('withRouteColumns', () => {
+  const names = (config: { name?: string }[]) => config.map((col) => col.name)
+
+  it('should add route columns beyond the config for unofficial boulder qualification', () => {
+    const config = getTableConfig({ isLead: false, isBoulder: true, isQualResult: false, isFinal: false })
+    const result = { rank: '1', stRank: '1', name: 'A', command: 'B', ...Object.fromEntries(Array.from({ length: 10 }, (_, i) => [`r${i + 1}`, '1/1'])), score: '249,7' }
+    expect(names(withRouteColumns(config, result))).toEqual(['место', undefined, 'ст.#', 'имя', 'команда', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'результат'])
+  })
+
+  it('should keep only routes present in the protocol for boulder final', () => {
+    const config = getTableConfig({ isLead: false, isBoulder: true, isQualResult: false, isFinal: true })
+    const result = { rank: '1', stRank: '1', name: 'A', command: 'B', qRank: '1', r1: '1/1', r2: '1/1', r3: '1/1', score: '1' }
+    expect(names(withRouteColumns(config, result))).toEqual(['место', undefined, 'ст.#', 'имя', 'команда', 'квал', '1', '2', '3', 'результат'])
   })
 })

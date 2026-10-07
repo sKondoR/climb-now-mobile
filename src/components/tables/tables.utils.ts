@@ -5,6 +5,7 @@ import {
   boulderQualConfig,
   boulderFinalConfig,
   speedQualConfig,
+  ROUTES_PROP,
 } from '@/shared/tables.configs'
 
 import { Results, ResultsItem, SpeedFinalItem } from '@/shared/types'
@@ -45,6 +46,18 @@ export function getTableConfig({ isFinal, isQualResult, isLead, isBoulder, isSpe
     return speedQualConfig
   }
   return leadQualConfig
+}
+
+type TableColumn = ReturnType<typeof getTableConfig>[number]
+// Колонка трассы боулдеринга: r1, r2… r10…
+export const isRouteProp = (prop?: string) => !!prop && /^r\d+$/.test(prop)
+
+// Трасс в боулдеринге бывает сколько угодно (на неофициальных стартах 10 в квалификации, в финале больше 4):
+// заглушку ROUTES_PROP из конфига разворачиваем в столько колонок, сколько трасс в протоколе
+export function withRouteColumns(config: TableColumn[], result: object): TableColumn[] {
+  const routesCount = Object.keys(result).filter(isRouteProp).length
+  const routes = Array.from({ length: routesCount }, (_, i) => ({ name: String(i + 1), prop: `r${i + 1}`, id: `route-${i + 1}` }))
+  return config.flatMap((col) => (col.prop === ROUTES_PROP ? routes : [col]))
 }
 
 interface getRowClassesProps {

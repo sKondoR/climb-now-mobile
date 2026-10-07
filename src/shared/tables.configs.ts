@@ -1,6 +1,8 @@
 
 export const NAME_COL = 'имя';
 export const COMMAND_COL = 'команда';
+// Место колонок трасс в конфиге боулдеринга: withRouteColumns разворачивает его в r1..rN по протоколу
+export const ROUTES_PROP = 'r1';
 
 export const leadQualConfig = [
     { name: 'место', short: 'м', prop: 'rank' },
@@ -39,14 +41,7 @@ export const boulderQualConfig = [
     { name: 'ст.#', short: 'ст', prop: 'stRank' },
     { name: NAME_COL, prop: 'name' },
     { name: COMMAND_COL, prop: 'command' },
-    { name: '1', prop: 'r1' },
-    { name: '2', prop: 'r2' },
-    { name: '3', prop: 'r3' },
-    { name: '4', prop: 'r4' },
-    { name: '5', prop: 'r5' },
-    { name: '6', prop: 'r6' },
-    { name: '7', prop: 'r7' },
-    { name: '8', prop: 'r8' },
+    { name: '1', prop: ROUTES_PROP },
     { name: 'результат', short: 'итог', prop: 'score' },
 ].map((item, i) => ({ ...item, id: `bq-${i}` }));
 
@@ -57,10 +52,7 @@ export const boulderFinalConfig = [
     { name: NAME_COL, prop: 'name' },
     { name: COMMAND_COL, prop: 'command' },
     { name: 'квал', short: 'кв', prop: 'qRank' },
-    { name: '1', prop: 'r1' },
-    { name: '2', prop: 'r2' },
-    { name: '3', prop: 'r3' },
-    { name: '4', prop: 'r4' },
+    { name: '1', prop: ROUTES_PROP },
     { name: 'результат', short: 'итог', prop: 'score' },
 ].map((item, i) => ({ ...item, id: `bf-${i}` }));
 
