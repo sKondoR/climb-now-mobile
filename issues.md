@@ -62,3 +62,34 @@
 - `npm test`, `npx tsc --noEmit`, `npm run lint` (react-compiler: никаких `let`, мутируемых в `.map()` при рендере);
 - `npx expo export --platform web` — классы и импорты разрешаются;
 - на устройстве: финалы с 1/8 и с 1/4 на узком экране, крупный системный шрифт, тёмная тема, скринридер (TalkBack/VoiceOver).
+
+## Expo SDK 58 — отложено
+
+На 7.10.2026 у `expo` тег `latest` всё ещё 57.0.27. SDK 58 (58.0.6) опубликован под тегом `next`, то есть это бета: первая сборка 58.0.0 вышла 29.09.2026. Он рассчитан на `react-native 0.88.0-rc.3`, то есть на release candidate самого React Native.
+
+Что меняется (по `bundledNativeModules.json` из `expo@58.0.6`):
+
+| Пакет | SDK 57 | SDK 58 |
+|---|---|---|
+| `react-native` | 0.86.3 | 0.88.0-rc.3 |
+| `react` / `react-dom` | 19.2.3 | 19.3.0 |
+| `react-native-gesture-handler` | 2.32 | 3.2 (мажорная) |
+| `react-native-reanimated` / `worklets` | 4.5.1 / 0.10.1 | 4.7.0 / 0.13.0 |
+| `react-native-screens` / `safe-area-context` | 4.26 / 5.7 | 4.28 / 5.9 |
+| `jest-expo` → `jest` | 29 | 30 |
+| `async-storage`, `netinfo` | 2.2.0, 12.0.1 | без изменений |
+
+Решение: переходить, когда SDK 58 станет `latest` (вместе со стабильным RN 0.88). Почему не сейчас:
+- в приложении, которое уже опубликовано в сторах, оказались бы RC-версии RN и Expo;
+- совместимость NativeWind 4 (`react-native-css-interop`) с RN 0.88 никто не подтверждал: в его зависимостях указано `react-native: *`;
+- мажорные версии gesture-handler 3 (нужен `expo-router`) и jest 30;
+- это обновление нативной части: через OTA (`expo-updates`) его не выкатить, нужны новые сборки в EAS и релиз в сторы.
+
+Что даст по `npm audit`: уйдут уязвимости из цепочки jest 29 (`sprintf-js`/`js-yaml`), часть уязвимостей в `expo-router`, вероятно `uuid` в config-plugins. Не уйдут `node-forge` (исправленной версии нет вообще) и цепочка Tailwind 3 (`braces`, `postcss-selector-parser`, уйдёт только с NativeWind 5). Всё это уязвимости в инструментах сборки, а не в коде приложения, так что спешить незачем.
+
+Как переходить:
+1. `npx expo install expo@^58`, затем `npx expo install --fix`;
+2. по changelog SDK 58 проверить breaking changes в `expo-router`, gesture-handler 3 и jest 30, а также совместимость NativeWind 4 с RN 0.88;
+3. `npx tsc --noEmit`, `npm test`, `npm run lint`, `npx expo export --platform web`;
+4. собрать dev-клиент и проверить на устройстве (Android и iOS);
+5. новые бинарники в EAS и релиз в сторы.
