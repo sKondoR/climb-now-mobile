@@ -64,7 +64,7 @@ export const fetchEvents = async (): Promise<EventResponse[]> => {
     const data: BaseResponseListEvent = await response.json()
     return data.data || []
   } catch (error) {
-    console.error('Error fetching events:', error)
+    console.warn('Error fetching events:', error)
     throw error
   }
 }
@@ -134,14 +134,14 @@ export const fetchResults = async (code: string): Promise<Discipline[] | null> =
     return data as Discipline[]
   } catch (error) {
     lastError = error as Error
-    console.error('Error fetching results:', error)
+    console.warn('Error fetching results:', error)
   }
 
   if (lastError) {
     if (lastError.name === 'AbortError') {
-      console.error('Fetch request timed out for code:', code)
+      console.warn('Fetch request timed out for code:', code)
     } else if (lastError.name === 'TypeError' && lastError.message.includes('fetch failed')) {
-      console.error('Network error occurred for code:', code, lastError.message)
+      console.warn('Network error occurred for code:', code, lastError.message)
     }
   }
   return null
@@ -153,7 +153,7 @@ export const fetchResults = async (code: string): Promise<Discipline[] | null> =
 export const fetchResultsTable = async (code: string, subgroupLink: string): Promise<SubGroupData> => {
   const response = await fetchWithTimeout(`${WEB_API_URL}results?code=${code}&subgroup=${subgroupLink}`)
   if (!response.ok) {
-    throw new Error(`Failed to fetch results: ${response.statusText}`)
+    throw new Error(`Failed to fetch results: ${response.status} ${response.statusText}`)
   }
   return response.json()
 }

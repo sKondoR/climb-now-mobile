@@ -33,7 +33,7 @@ export default function useFetchResults({ code, subgroupLink, isOnline }: UseRes
   }, [isOnline, subgroupLink, query.refetch])
 
   if (query.error) {
-    console.error('Error in useFetchResults:', query.error)
+    console.warn('Error in useFetchResults:', query.error)
   }
 
   return {
