@@ -99,13 +99,14 @@ export default observer(function GroupCard({ group }: GroupCardProps) {
                     isActive ? "border-accent" : "border-transparent"
                   }`}
                 >
-                  <StatusIcon status={tab.status} />
+                  {tab.status !== STATUSES.ONLINE && <StatusIcon status={tab.status} />}
                   <Text
                     className={`text-body-sm font-medium ${isActive ? "text-fg" : "text-fg-muted"}`}
                   >
                     {/* Сокращение только визуальное: скринридеру остаётся полное название из accessibilityLabel */}
                     {tab.label.replace(/(к)валификация/gi, "$1вал.")}
                   </Text>
+                  {tab.status === STATUSES.ONLINE && <StatusIcon status={tab.status} />}
                 </Pressable>
               );
             })}

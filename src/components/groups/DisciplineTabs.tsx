@@ -1,6 +1,8 @@
 import { Pressable, ScrollView, Text } from 'react-native'
 
 import { Discipline } from '@/shared/types'
+import { STATUSES } from '@/shared/constants'
+import StatusIcon from './StatusIcon'
 
 interface DisciplineTabsProps {
   disciplines: Discipline[] | null
@@ -19,22 +21,26 @@ export default function DisciplineTabs({ disciplines, setActiveTab, activeTab }:
       accessibilityRole="tablist"
       contentContainerClassName="grow gap-1 px-4 py-1.5 justify-center"
     >
-      {disciplines.map(({ discipline }, index: number) => {
+      {disciplines.map(({ discipline, groups }, index: number) => {
         const isActive = activeTab === index
+        // Точка «в эфире», если в дисциплине хоть одна подгруппа идёт сейчас
+        const isLive = groups.some((group) => group.subgroups.some((subgroup) => subgroup.status === STATUSES.ONLINE))
         return (
           <Pressable
             key={`${discipline}-${index}`}
             onPress={() => setActiveTab(index)}
             hitSlop={{ top: 6, bottom: 6 }}
             accessibilityRole="tab"
+            accessibilityLabel={`${discipline}${isLive ? ', идёт сейчас' : ''}`}
             accessibilityState={{ selected: isActive }}
-            className={`px-4 py-1.5 rounded-lg ${
+            className={`flex-row items-center px-4 py-1.5 rounded-lg ${
               isActive ? 'bg-accent' : 'bg-surface-muted'
             }`}
           >
             <Text className={`text-body font-medium ${isActive ? 'text-white' : 'text-fg-muted'}`}>
               {discipline}
             </Text>
+            {isLive && <StatusIcon status={STATUSES.ONLINE} onDark={isActive} />}
           </Pressable>
         )
       })}

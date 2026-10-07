@@ -7,7 +7,8 @@ import { STATUSES } from '@/shared/constants'
 import { useIconColors } from '@/shared/theme'
 import { useReduceMotion } from '@/shared/hooks/useReduceMotion'
 
-export default function StatusIcon({ status, onlyOnline }: { status: Status; onlyOnline?: boolean }) {
+// onDark — точка на залитом акцентом фоне (активная вкладка дисциплины): обводка белая, а не цвета карточки
+export default function StatusIcon({ status, onlyOnline, onDark }: { status: Status; onlyOnline?: boolean; onDark?: boolean }) {
   const isOnline = status === STATUSES.ONLINE
   const iconColors = useIconColors()
   // При «уменьшить движение» точка не пульсирует: онлайн по-прежнему видно по цвету,
@@ -33,10 +34,16 @@ export default function StatusIcon({ status, onlyOnline }: { status: Status; onl
   if (onlyOnline && !isOnline) return null
 
   return (
-    <View className="w-4 mr-1 items-center justify-center" importantForAccessibility="no-hide-descendants" accessibilityElementsHidden>
-      <Animated.View style={{ opacity: isOnline && !reduceMotion ? pulse : 1 }}>
-        <FontAwesome6 name={isOnline ? 'circle' : 'check'} solid size={12} color={iconColors.live} />
-      </Animated.View>
+    // Галочка стоит перед названием в колонке фиксированной ширины, точка «в эфире» — после названия
+    <View className={`items-center justify-center ${isOnline ? 'mx-1' : 'w-4 mr-1'}`} importantForAccessibility="no-hide-descendants" accessibilityElementsHidden>
+      {isOnline ? (
+        // Обводка отделяет зелёную точку от фона под ней
+        <Animated.View style={{ opacity: reduceMotion ? 1 : pulse }}>
+          <View className={`w-3 h-3 rounded-full bg-live border ${onDark ? 'border-white' : 'border-surface'}`} />
+        </Animated.View>
+      ) : (
+        <FontAwesome6 name="check" solid size={12} color={iconColors.live} />
+      )}
     </View>
   )
 }

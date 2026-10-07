@@ -16,6 +16,9 @@ const TABULAR_NUMS = { fontVariant: ['tabular-nums' as const] }
 const CELL = 'px-1 py-1 justify-center'
 // Как в основной таблице: заголовок («команда») в одну строку, при нехватке места шрифт сжимается
 const HEADER_TEXT_PROPS = { numberOfLines: 1, adjustsFontSizeToFit: true, minimumFontScale: 0.7 }
+// Слева у каждой строки (и шапки) — место под полоску победителя забега: у остальных она прозрачная,
+// поэтому колонки стоят ровно
+const STRIPE = 'border-l-4'
 
 // Сетку-дерево не рисуем: на телефоне четыре колонки раундов не помещаются.
 // Раунды по порядку (1/8, 1/4, полуфинал, финал) — друг под другом, каждый забег — своя пара строк
@@ -32,7 +35,7 @@ export default function SpeedBracket({ results, command, isNamesFilterEnabled, n
           <View key={round}>
             <Text className="px-1 text-body font-semibold text-accent-soft-fg mb-1" accessibilityRole="header">{round}</Text>
             {/* Шапку скринридер пропускает: строки озвучиваются целиком */}
-            <View className="flex-row border-b border-line" importantForAccessibility="no-hide-descendants" accessibilityElementsHidden>
+            <View className={`flex-row border-b border-line ${STRIPE} border-l-transparent`} importantForAccessibility="no-hide-descendants" accessibilityElementsHidden>
               {isFinal && <Text className={`${CELL} w-12 text-caption font-medium text-fg-subtle`} {...HEADER_TEXT_PROPS}>место</Text>}
               <Text className={`${CELL} flex-1 text-caption font-medium text-fg-subtle`} {...HEADER_TEXT_PROPS}>{NAME_COL}</Text>
               <Text className={`${CELL} w-16 text-caption font-medium text-fg-subtle`} {...HEADER_TEXT_PROPS}>{COMMAND_COL}</Text>
@@ -46,7 +49,7 @@ export default function SpeedBracket({ results, command, isNamesFilterEnabled, n
                   .filter((result) => result.heat === heat)
                   .sort((a, b) => (isFinal && a.rank && b.rank ? Number(a.rank) - Number(b.rank) : 0))
                   .map((result) => {
-                    // Зелёным — только призёры финала: победителей забегов не красим, их время и так жирное
+                    // Зелёным — только призёры финала; победитель забега отмечен полоской слева и жирным временем
                     const rowClass = getRowClasses({
                       result: { ...result, isHighlighted: false },
                       command,
@@ -56,19 +59,21 @@ export default function SpeedBracket({ results, command, isNamesFilterEnabled, n
                     })
                     const isOwn = rowClass.includes('bg-highlight')
                     const rowState = isOwn ? ', свой' : rowClass.includes('bg-live-soft') ? ', призёр' : ''
+                    // Место показываем только призёрам: 4-е в забеге за III место ничего не значит
+                    const place = Number(result.rank) <= 3 ? result.rank : ''
                     const rowLabel =
-                      `${isFinal ? `место ${result.rank || 'нет'}, ` : ''}${result.name}, команда ${result.command || 'нет'}, ` +
+                      `${isFinal ? `место ${place || 'нет'}, ` : ''}${result.name}, команда ${result.command || 'нет'}, ` +
                       `время ${result.score || 'нет'}${result.isHighlighted ? ', победитель забега' : ''}${rowState}`
                     return (
                       <View
                         key={result.name}
-                        className={`flex-row border-b border-surface ${rowClass || 'bg-surface-muted/50'}`}
+                        className={`flex-row border-b border-surface ${STRIPE} ${result.isHighlighted ? 'border-l-winner' : 'border-l-transparent'} ${rowClass || 'bg-surface-muted/50'}`}
                         accessible
                         accessibilityLabel={rowLabel}
                       >
                         {isFinal && (
                           <Text style={TABULAR_NUMS} className={`${CELL} w-12 text-caption font-medium text-fg`}>
-                            {result.rank}
+                            {place}
                           </Text>
                         )}
                         <Text className={`${CELL} flex-1 text-caption text-fg ${isOwn ? 'font-bold' : 'font-medium'}`}>

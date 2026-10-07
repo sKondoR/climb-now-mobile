@@ -28,9 +28,15 @@
   --live-faint: 240 253 244;     /* текущие соревнования в списке — green-50 */
   --live-line: 34 197 94;        /* граница зоны прохода — green-500 */
 
-  --boulder: 252 165 165;        /* red-300 */
-  --boulder-fg: 17 24 39;        /* gray-900 */
-  --boulder-empty: 229 231 235;  /* gray-200 */
+  /* Ячейка боулдеринга: верх — топ, низ — зона */
+  --boulder-top: 239 68 68;      /* топ — red-500 */
+  --boulder-top-zone: 220 38 38; /* зона при топе — red-600 */
+  --boulder-zone: 59 130 246;    /* зона без топа — blue-500 */
+  --boulder-blank: 243 244 246;  /* нет топа — gray-100 */
+  --boulder-fg: 255 255 255;     /* цифры попыток */
+  --boulder-empty: 229 231 235;  /* не пролезено — gray-200 */
+
+  --winner: 220 38 38;           /* полоска победителя забега скорости — red-600 */
 
   --warn-soft: 254 243 199;      /* amber-100 */
   --warn-fg: 146 64 14;          /* amber-800 */
@@ -62,9 +68,14 @@
     --live-faint: 5 46 22;       /* green-950 */
     --live-line: 34 197 94;      /* green-500 */
 
-    --boulder: 127 29 29;        /* red-900 */
-    --boulder-fg: 254 226 226;   /* red-100 */
+    --boulder-top: 220 38 38;    /* red-600 */
+    --boulder-top-zone: 185 28 28; /* red-700 */
+    --boulder-zone: 37 99 235;   /* blue-600 */
+    --boulder-blank: 31 41 55;   /* gray-800 */
+    --boulder-fg: 255 255 255;
     --boulder-empty: 55 65 81;   /* gray-700 */
+
+    --winner: 239 68 68;         /* red-500 */
 
     --warn-soft: 69 46 10;
     --warn-fg: 253 230 138;      /* amber-200 */
