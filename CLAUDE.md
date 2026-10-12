@@ -8,7 +8,7 @@ Always use Context7 when I need library/API documentation, code generation, setu
 
 ## Project overview
 
-Expo/React Native port of the `climb-now` Next.js web app (see `../climb-now`). Displays live climbing competition results from the Russian Climbing Federation, ported per `plans/migration-plan.md`. That plan documents the architecture decisions (data source, styling, navigation, state, offline caching) and the stage-by-stage migration order this codebase follows — read it before making structural changes.
+Expo/React Native port of the `climb-now` Next.js web app (see `../climb-now`). Displays live climbing competition results from the Russian Climbing Federation.
 
 ## Commands
 
@@ -16,8 +16,9 @@ Expo/React Native port of the `climb-now` Next.js web app (see `../climb-now`). 
 npm install               # install dependencies
 npx expo install --check  # verify all deps match the installed Expo SDK version
 npm start                 # expo start — dev server (press i/a/w for iOS/Android/web)
-npm run ios               # expo start --ios
-npm run android            # expo start --android
+npm run ios               # expo run:ios — native dev build + run (needs macOS)
+npm run android            # expo run:android — native dev build + run on emulator/device
+npm run prebuild            # expo prebuild --clean — regenerate native folders
 npm run web                 # expo start --web
 npm run lint                 # expo lint
 npm test                      # jest run
@@ -28,10 +29,10 @@ npx expo export --platform web   # produce a static web bundle — fastest way t
 
 Run a single test file: `npx jest src/shared/utils/date.utils.test.ts`.
 
-## Key decisions (see `plans/migration-plan.md` for detail)
+## Key decisions
 
-- **Data source**: no local parser or backend — the app calls the already-deployed `https://climbnow.ru/api/groups` and `https://climbnow.ru/api/results` (`src/shared/services.ts`). Don't reimplement the HTML scraping/parsing here.
-- **Code sharing with `climb-now`**: independent copies, not a monorepo — files under `src/shared/types`, `src/shared/utils`, `src/store` started as hand-copies of the web app's equivalents and now diverge independently.
+- **Data source**: the app calls the already-deployed `https://climbnow.ru/api/groups` and `https://climbnow.ru/api/results` (`src/shared/services.ts`). Only if climbnow.ru is unreachable (network error, timeout, 5xx — not 4xx) does it fetch `https://c-f-r.ru/live/...` directly and parse it with `src/shared/parser/parsers.ts`, a copy of the web app's parser (iOS/Android only — CORS blocks it in the Expo web build). The web parser stays the primary one: when c-f-r.ru markup changes, fix it in `climb-now` first, then mirror the fix here. Events fall back the same way to the rusclimbing.ru calendar (`EVENTS_SOURCE_URL`), parsed with `src/shared/parser/events.parser.ts` (a copy of the web one; ids are the same FNV-1a hash of the event code as `/api/events`). Teams (→ `DEFAULT_TEAMS`) and the event-link PATCH have no source fallback — they live only on the backend. After any climbnow.ru failure, `fetchBackend` skips it for `BACKEND_RETRY_AFTER` (2 min) so requests don't each wait out `FETCH_TIMEOUT`.
+- **Code sharing with `climb-now`**: independent copies, not a monorepo — files under `src/shared/types`, `src/shared/utils`, `src/shared/parser`, `src/store` started as hand-copies of the web app's equivalents and now diverge independently.
 - **Offline**: `@tanstack/react-query` wrapped in `PersistQueryClientProvider` with `@tanstack/query-async-storage-persister` over `@react-native-async-storage/async-storage` (`src/store/RootStoreProvider.tsx`) — set up from the start, not deferred.
 - **Analytics**: none.
 - **Footer/CMS content**: none (the web app's Payload CMS was also removed, so there's nothing to integrate with).
@@ -55,12 +56,12 @@ Components under `src/components/` and `src/shared/components/` are RN rewrites 
 - `Autocomplete` is a field that opens a bottom sheet (`Modal` with its own search input and list) instead of the web version's inline dropdown — the field stays usable with no list (manual entry).
 - `Table` renders as nested `View`s in a horizontal `ScrollView` (fixed-width columns via `getTableConfig`) instead of an HTML `<table>`.
 - Icons use `@expo/vector-icons/FontAwesome6` instead of `@fortawesome/react-fontawesome`.
-- The web app's `LazyLoader` (`IntersectionObserver`-based lazy mount) was dropped per the migration plan; the group list in `src/app/index.tsx` renders via a virtualized `FlatList` (header, discipline tabs and status messages live in `ListHeaderComponent`; spacing between cards is an `ItemSeparatorComponent`). `@shopify/flash-list` isn't installed — consider it only if `FlatList` proves too slow.
+- The web app's `LazyLoader` (`IntersectionObserver`-based lazy mount) was dropped; the group list in `src/app/index.tsx` renders via a virtualized `FlatList` (header, discipline tabs and status messages live in `ListHeaderComponent`; spacing between cards is an `ItemSeparatorComponent`). `@shopify/flash-list` isn't installed — consider it only if `FlatList` proves too slow.
 - `react-compiler` is enabled (`app.json` → `experiments.reactCompiler`), which is strict about mutating variables during render and calling `setState` synchronously inside `useEffect`. `tables.utils.ts`'s `getFinalBorderClasses()` and the derived-state pattern in `useFetchResults` exist specifically to satisfy that lint (`npm run lint`) — don't reintroduce a `let` mutated inside a `.map()` in a render body or an effect that just mirrors props/query state into local state.
 
 ### Not yet done
 
-- **EAS Build / store release** (plan Этап 7) needs the user's own Expo/Apple/Google developer accounts and credentials — not something to attempt without them.
+- **EAS Build / store release** needs the user's own Expo/Apple/Google developer accounts and credentials — not something to attempt without them.
 - **Universal/App Links** (opening `https://climbnow.ru/...` links directly in the app) need `apple-app-site-association` and `assetlinks.json` hosted on the `climb-now` web domain, which needs real Apple/Google team IDs. Only the custom `climbnow://` URL scheme is wired up so far.
 
 ## Sibling project

@@ -68,3 +68,16 @@ export const speedQualConfig = [
     { name: 'тр.2', prop: 'score2' },
     { name: 'результат', short: 'итог', prop: 'score' },
 ].map((item, i) => ({ ...item, id: `sq-${i}` }));
+
+// Колонки классической скорости для парсера (src/shared/parser): без второго стартового номера тр.2 иначе попадёт в stRank2.
+// Таблица на экране показывает колонки speedQualConfig
+export const speedClassicQualConfig = [
+    { name: 'место', short: 'м', prop: 'rank' },
+    {},
+    { name: 'ст.#', short: 'ст', prop: 'stRank' },
+    { name: NAME_COL, prop: 'name' },
+    { name: COMMAND_COL, prop: 'command' },
+    { name: 'тр.1', prop: 'score1' },
+    { name: 'тр.2', prop: 'score2' },
+    { name: 'результат', short: 'итог', prop: 'score' },
+].map((item, i) => ({ ...item, id: `scq-${i}` }));

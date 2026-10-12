@@ -44,7 +44,7 @@ export class DisciplinesStore {
   }
 
   // В отличие от веб-версии, здесь нет адресной строки для синхронизации code —
-  // deep linking с предзаполненным code/names обрабатывает FormStore.loadFromUrl (см. 2.5 плана миграции).
+  // deep linking с предзаполненным code/names обрабатывает FormStore.loadFromUrl.
   // silent — фоновое обновление (pull-to-refresh): уже показанные группы не сбрасываются
   // и не заменяются состоянием загрузки, а при неудаче остаются на экране.
   async fetchGroups(code: string, name?: string, { silent = false }: { silent?: boolean } = {}) {
@@ -82,7 +82,8 @@ export class DisciplinesStore {
         this.formStore.setCode(usedCode)
         const event = this.eventsStore.events.find((ev) => ev.link === code)
         if (event) {
-          patchEvent(event.id, usedCode)
+          // Не критично: без бэкенда суффикс просто подберётся заново в следующий раз (ошибку уже залогировал patchEvent)
+          patchEvent(event.id, usedCode).catch(() => {})
         }
       }
     } catch (error) {

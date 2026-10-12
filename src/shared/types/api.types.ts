@@ -15,7 +15,6 @@ import type {
  * Эти типы используются для типизации ответов API
  */
 export type EventResponse = components['schemas']['EventResponse'];
-export type BaseResponse = components['schemas']['BaseResponse'];
 export type BaseResponseListEvent = components['schemas']['BaseResponse_List_EventResponse__'];
 export type BodyFetchEvents = components['schemas']['Body_fetch_events'];
 export type BodyFetchEventsRemote = components['schemas']['Body_fetch_events_remote'];

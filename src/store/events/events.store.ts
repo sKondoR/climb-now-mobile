@@ -20,7 +20,9 @@ export class EventsStore {
       queryKey: ['events'],
       queryFn: fetchEvents,
       staleTime: 1000 * 60 * 60 * 24, // day
-      retry: 3,
+      // Один повтор: если не отвечает и climbnow.ru, и календарь rusclimbing.ru, каждая попытка — это FETCH_TIMEOUT
+      // ожидания, и три повтора держали бы спиннер в поле кода около минуты
+      retry: 1,
       retryDelay: 500
     })
 

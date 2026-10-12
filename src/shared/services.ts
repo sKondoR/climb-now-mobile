@@ -1,24 +1,52 @@
+import { Platform } from 'react-native'
+
 import { Discipline, SubGroupData } from '@/shared/types'
-import { BACKEND_API_URL, DEFAULT_TEAMS, FETCH_TIMEOUT, WEB_API_URL } from './constants'
+import { BACKEND_API_URL, BACKEND_RETRY_AFTER, DEFAULT_TEAMS } from './constants'
+import { fetchEventsFromSource, fetchResultsFromSource, fetchResultsTableFromSource } from './parser/sources'
 import { getDateRange } from './utils/date.utils'
+import { fetchWithTimeout } from './utils/fetch.utils'
 import type {
   EventResponse,
   BaseResponseListEvent,
-  BaseResponse,
   FetchEventsOperation,
 } from './types/api.types'
 
-/**
- * fetch с таймаутом: если соединение повисло (например, домен режется DPI),
- * запрос падает с ошибкой вместо вечной загрузки.
- */
-const fetchWithTimeout = async (url: string, init?: RequestInit): Promise<Response> => {
-  const controller = new AbortController()
-  const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT)
+// climbnow.ru не ответил (нет соединения, таймаут, 5xx) — следующие BACKEND_RETRY_AFTER мс к нему не ходим:
+// иначе каждый запрос сначала ждал бы FETCH_TIMEOUT, прежде чем упасть или перейти к источнику
+let backendDownUntil = 0
+
+const fetchBackend = async (url: string, init?: RequestInit): Promise<Response> => {
+  if (Date.now() < backendDownUntil) {
+    throw new Error('climbnow.ru unavailable (skipped)')
+  }
   try {
-    return await fetch(url, { ...init, signal: controller.signal })
-  } finally {
-    clearTimeout(timeoutId)
+    const response = await fetchWithTimeout(url, init)
+    if (response.status >= 500) {
+      throw new Error(`climbnow.ru responded with ${response.status}`)
+    }
+    backendDownUntil = 0
+    return response
+  } catch (error) {
+    backendDownUntil = Date.now() + BACKEND_RETRY_AFTER
+    throw error
+  }
+}
+
+// В веб-сборке браузер не пустит запрос на c-f-r.ru и rusclimbing.ru (CORS), запасной путь только для iOS/Android
+const canFetchSources = Platform.OS !== 'web'
+
+/**
+ * Запрос к API climbnow.ru. null — бэкенд недоступен, и вызывающий идёт к источнику напрямую
+ * (в веб-сборке идти некуда — ошибка пробрасывается). Ответы 4xx штатные (404 при подборе суффикса кода)
+ * и возвращаются как есть.
+ */
+const tryBackend = async (url: string): Promise<Response | null> => {
+  try {
+    return await fetchBackend(url)
+  } catch (error) {
+    if (!canFetchSources) throw error
+    console.warn('climbnow.ru unavailable:', error)
+    return null
   }
 }
 
@@ -27,7 +55,7 @@ const fetchWithTimeout = async (url: string, init?: RequestInit): Promise<Respon
  */
 export const fetchTeams = async (): Promise<string[]> => {
   try {
-    const response = await fetchWithTimeout(`${BACKEND_API_URL}teams`)
+    const response = await fetchBackend(`${BACKEND_API_URL}teams`)
 
     if (!response.ok) {
       throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`)
@@ -55,7 +83,8 @@ export const fetchEvents = async (): Promise<EventResponse[]> => {
     }
 
     const queryString = new URLSearchParams(params as Record<string, string>).toString()
-    const response = await fetchWithTimeout(`${BACKEND_API_URL}events?${queryString}`)
+    const response = await tryBackend(`${BACKEND_API_URL}events?${queryString}`)
+    if (!response) return await fetchEventsFromSource(startDate, endDate)
 
     if (!response.ok) {
       throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`)
@@ -76,7 +105,7 @@ export const fetchEvents = async (): Promise<EventResponse[]> => {
  */
 export const patchEvent = async (eventId: number, newCode: string): Promise<EventResponse> => {
   try {
-    const response = await fetchWithTimeout(`${BACKEND_API_URL}events/${eventId}`, {
+    const response = await fetchBackend(`${BACKEND_API_URL}events/${eventId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -91,67 +120,35 @@ export const patchEvent = async (eventId: number, newCode: string): Promise<Even
     const data: EventResponse = await response.json()
     return data
   } catch (error) {
-    console.error('Patch event failed:', error)
-    throw error
-  }
-}
-
-/**
- * Проверяет здоровье API
- */
-export const healthCheck = async (): Promise<BaseResponse> => {
-  try {
-    const response = await fetchWithTimeout(`${BACKEND_API_URL}health`)
-
-    if (!response.ok) {
-      throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`)
-    }
-
-    const data: BaseResponse = await response.json()
-    return data
-  } catch (error) {
-    console.error('Health check failed:', error)
+    console.warn('Patch event failed:', error)
     throw error
   }
 }
 
 /**
  * Получает результаты (список дисциплин/групп) для указанного кода соревнования
- * с уже задеплоенного продакшена climb-now (см. plans/migration-plan.md, п.2.1) —
- * мобильное приложение не парсит HTML c-f-r.ru само.
+ * с продакшена climb-now, а если он недоступен — напрямую с c-f-r.ru.
  */
 export const fetchResults = async (code: string): Promise<Discipline[] | null> => {
-  let lastError: Error | null = null
-
   try {
-    const response = await fetchWithTimeout(`${WEB_API_URL}groups?code=${code}`)
-
+    const response = await tryBackend(`${BACKEND_API_URL}groups?code=${code}`)
+    if (!response) return await fetchResultsFromSource(code)
     if (!response.ok) {
       throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`)
     }
-
-    const data = await response.json()
-    return data as Discipline[]
+    return (await response.json()) as Discipline[]
   } catch (error) {
-    lastError = error as Error
     console.warn('Error fetching results:', error)
+    return null
   }
-
-  if (lastError) {
-    if (lastError.name === 'AbortError') {
-      console.warn('Fetch request timed out for code:', code)
-    } else if (lastError.name === 'TypeError' && lastError.message.includes('fetch failed')) {
-      console.warn('Network error occurred for code:', code, lastError.message)
-    }
-  }
-  return null
 }
 
 /**
- * Получает таблицу результатов конкретной подгруппы с продакшена climb-now.
+ * Получает таблицу результатов конкретной подгруппы с продакшена climb-now, а если он недоступен — напрямую с c-f-r.ru.
  */
 export const fetchResultsTable = async (code: string, subgroupLink: string): Promise<SubGroupData> => {
-  const response = await fetchWithTimeout(`${WEB_API_URL}results?code=${code}&subgroup=${subgroupLink}`)
+  const response = await tryBackend(`${BACKEND_API_URL}results?code=${code}&subgroup=${subgroupLink}`)
+  if (!response) return fetchResultsTableFromSource(code, subgroupLink)
   if (!response.ok) {
     throw new Error(`Failed to fetch results: ${response.status} ${response.statusText}`)
   }

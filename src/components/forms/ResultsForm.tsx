@@ -17,7 +17,7 @@ import { Event } from "@/shared/types/events";
 import { EventTemplate } from "./EventTemplate";
 
 // Веб-версия чистила ввод через DOMPurify (защита от innerXSS в браузере) — в RN текст никогда
-// не интерпретируется как HTML, санитайз не нужен (см. plans/migration-plan.md, маппинг зависимостей).
+// не интерпретируется как HTML, санитайз не нужен.
 export default observer(function ResultsForm() {
   const formStore = rootStore.formStore;
   const teamsStore = rootStore.teamsStore;
@@ -91,6 +91,7 @@ export default observer(function ResultsForm() {
         dataLabel={DEFAULT_URL_CODE}
         property="link"
         isLoading={eventsStore.isEventsLoading}
+        isError={!!eventsStore.error}
         labelAction={
           disciplinesStore.groupsData ? (
             <LinkToEvent code={formStore.code} />

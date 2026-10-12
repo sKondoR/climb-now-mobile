@@ -32,6 +32,8 @@ interface AutocompleteProps<T extends Item = string | Record<string, unknown>> {
   property?: keyof T | string
   renderItem?: RenderItem<T>
   isLoading?: boolean
+  // Список не загрузился (например, бэкенд недоступен) — вместо «списка нет» говорим об ошибке
+  isError?: boolean
   // Кнопка-иконка справа от подписи (ссылка на сайт ФСР, переключатель команда/фамилии)
   labelAction?: ReactNode
 }
@@ -57,6 +59,7 @@ export const Autocomplete = <T extends Item = string>({
   property = '',
   renderItem,
   isLoading = false,
+  isError = false,
   labelAction,
 }: AutocompleteProps<T>) => {
   const [isOpen, setIsOpen] = useState(false)
@@ -114,6 +117,7 @@ export const Autocomplete = <T extends Item = string>({
     close()
   }
 
+  const emptyText = data.length ? 'ничего не найдено' : isError ? 'не удалось загрузить список' : 'списка нет'
   const renderEmpty = () => (
     <View className="px-4 py-6 items-center">
       {isLoading ? (
@@ -123,7 +127,7 @@ export const Autocomplete = <T extends Item = string>({
         </>
       ) : (
         <Text className="text-body-sm text-fg-muted text-center">
-          {data.length ? 'ничего не найдено' : 'списка нет'} — введённое значение будет использовано как есть
+          {emptyText} — введённое значение будет использовано как есть
         </Text>
       )}
     </View>

@@ -10,13 +10,17 @@ export const DEFAULT_TEAMS = [
 export const UPDATE_INTERVAL = 120000
 export const DEBOUNCE_DELAY = 500
 export const FETCH_TIMEOUT = 15000
+// Сколько не обращаться к climbnow.ru после того, как он не ответил (см. fetchBackend в services.ts)
+export const BACKEND_RETRY_AFTER = 2 * 60 * 1000
+// Как в веб-версии: код соревнования и подгруппа подставляются в путь URL источника
+export const SAFE_PATH_SEGMENT = /^[\w-]+$/
 
-// Продакшен climb-now отдаёт уже распарсенные результаты — свой парсер/бэкенд в мобильном приложении не нужен (см. plans/migration-plan.md, п.2.1).
-export const WEB_API_URL = 'https://climbnow.ru/api/'
-// Через прокси climb-now: cfr-search.vercel.app из РФ без VPN недоступен
+export const CFR_LIVE_URL = 'https://c-f-r.ru/live/'
+// Календарь соревнований ФСР — источник событий, если climbnow.ru недоступен (на бэкенде /api/events парсит его же)
+export const EVENTS_SOURCE_URL = 'https://www.rusclimbing.ru/competitions/'
+// API продакшена climb-now: уже распарсенные результаты, события, команды. Если он недоступен, результаты и события
+// берутся с CFR_LIVE_URL и EVENTS_SOURCE_URL и парсятся в приложении (src/shared/parser/sources.ts) — см. services.ts
 export const BACKEND_API_URL = 'https://climbnow.ru/api/'
-// Только для ссылки "открыть на сайте федерации" (LinkToEvent) — не используется для получения/парсинга данных.
-export const EXTERNAL_EVENT_BASE_URL = 'http://c-f-r.ru/live/'
 
 export const DISCIPLINES = {
   LEAD: 'трудность' as const,
